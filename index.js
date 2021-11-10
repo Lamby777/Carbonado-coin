@@ -1,3 +1,4 @@
+"use strict";
 // Yet another random coin
 
 // "Borrowed" from NodeJS documentation
@@ -12,6 +13,14 @@ class Block {
 		this.body = body,
 		this.hash = hash,
 		this.previous = previous;
+	}
+
+	static makeHashOf(block) {
+		if (block instanceof Block) {
+			return hash(num + previous + body + timestamp);
+		} else {
+			throw TypeError("Attempt to get hash of non-block");
+		}
 	}
 }
 
