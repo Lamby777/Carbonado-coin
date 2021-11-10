@@ -31,7 +31,7 @@ class Block {
 		let timestamp = new Date().getTime();
 		let block = new Block(num, previous, body, timestamp);
 		return block;
-	};
+	}
 
 
 	static verify(block) {
@@ -48,7 +48,7 @@ class Block {
 			valid = false;
 		}
 		return valid;
-	};
+	}
 }
 
 function hash(input) {
