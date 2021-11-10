@@ -5,6 +5,11 @@
 const crypto = require("crypto");
 const secret = process.env['SECRET'];
 const algo = crypto.createHmac('sha256', secret)
+const genesis = new Block(0, "", 1636563534866, {
+	//
+});
+
+const blockchain = [genesis];
 
 class Block {
 	constructor(num, previous, body, timestamp, hash) {
@@ -12,7 +17,7 @@ class Block {
 		this.previous = previous,
 		this.body = body,
 		this.timestamp = timestamp,
-		this.hash = hash;
+		this.hash = makeHashOf(this);
 	}
 
 	static makeHashOf(block) {
@@ -29,8 +34,8 @@ class Block {
 		let num = previous.index + 1;
 		let timestamp = new Date().toLocaleString(
 			'en-US', { timeZone: 'America/New_York' });
-		let hash = hash(num + previous + body + timestamp);
-		let block = new Block(num, previous, body, timestamp, hash);
+		let block = new Block(num, previous, body, timestamp);
+		//block.hash = makeHashOf(block);
 		return block;
 	};
 }
