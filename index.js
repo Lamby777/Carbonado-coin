@@ -32,8 +32,8 @@ class Block {
 		let prevBlock = getLatestBlock();
 		let previous = prevBlock.hash;
 		let num = previous.index + 1;
-		let timestamp = new Date().toLocaleString(
-			'en-US', { timeZone: 'America/New_York' });
+		let timestamp = new Date().getTime();//.toLocaleString(
+			//'en-US', { timeZone: 'America/New_York' });
 		let block = new Block(num, previous, body, timestamp);
 		//block.hash = makeHashOf(block);
 		return block;
