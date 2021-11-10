@@ -12,12 +12,13 @@ class Block {
 		this.previous = previous,
 		this.body = body,
 		this.timestamp = timestamp,
-		this.hash = makeHashOf(this);
+		this.hash = Block.makeHashOf(this);
 	}
 
 	static makeHashOf(block) {
 		if (block instanceof Block) {
-			return hash(num + previous + body + timestamp);
+			return hash(block.num + block.previous +
+					block.body + block.timestamp);
 		} else {
 			throw TypeError("Attempt to get hash of non-block");
 		}

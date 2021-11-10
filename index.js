@@ -3,7 +3,7 @@
 
 // "Borrowed" from NodeJS documentation
 const writeup = require("./writeup.js");
-const genesis = new Block(0, "", 1636563534866, {
+const genesis = new writeup.Block(0, "", 1636563534866, {
 	sender: "Dex",
 	recipient: "Tomato",
 	content: {type: "Diamond", quantity: 1},
