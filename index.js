@@ -27,7 +27,8 @@ class Block {
 		let prevBlock = getLatestBlock();
 		let previous = prevBlock.hash;
 		let num = previous.index + 1;
-		let timestamp = new Date().getTime() / 1000;
+		let timestamp = new Date().toLocaleString(
+			'en-US', { timeZone: 'America/New_York' });
 		let hash = hash(num + previous + body + timestamp);
 		let block = new Block(num, previous, body, timestamp, hash);
 		return block;
