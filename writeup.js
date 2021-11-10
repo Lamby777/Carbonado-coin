@@ -44,7 +44,7 @@ class Block {
 
 		if ((prevBlock.num + 1 !== block.num) || // Block does not succeed previous
 			(prevBlock.hash !== block.previous) || // Block previous hash doesn't match
-			(Block.createHash(block) !== block.hash) { // Block was tampered
+			(Block.createHash(block) !== block.hash)) { // Block was tampered
 			valid = false;
 		}
 		return valid;
