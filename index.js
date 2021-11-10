@@ -10,3 +10,7 @@ const genesis = new writeup.Block(0, "", 1636563534866, {
 });
 
 const blockchain = [genesis];
+
+function verifyBlockchain(blockchain) {
+	return blockchain.every(n => Block.verify(n));
+}

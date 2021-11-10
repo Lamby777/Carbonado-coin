@@ -12,10 +12,10 @@ class Block {
 		this.previous = previous, // Previous hash
 		this.body = body,
 		this.timestamp = timestamp,
-		this.hash = Block.makeHashOf(this);
+		this.hash = Block.createHash(this);
 	}
 
-	static makeHashOf(block) {
+	static createHash(block) {
 		if (block instanceof Block) {
 			return hash(block.num + block.previous +
 					block.body + block.timestamp);
@@ -24,19 +24,17 @@ class Block {
 		}
 	}
 
-	static generateNextBlock(body) {
+	static generate(body) {
 		let prevBlock = getLatestBlock();
 		let previous = prevBlock.hash;
 		let num = previous.index + 1;
-		let timestamp = new Date().getTime();//.toLocaleString(
-			//'en-US', { timeZone: 'America/New_York' });
+		let timestamp = new Date().getTime();
 		let block = new Block(num, previous, body, timestamp);
-		//block.hash = makeHashOf(block);
 		return block;
 	};
 
 
-	static validateBlock(block) {
+	static verify(block) {
 		// Genesis always valid
 		if (block.num === 0) return true;
 		
@@ -46,7 +44,7 @@ class Block {
 
 		if ((prevBlock.num + 1 !== block.num) || // Block does not succeed previous
 			(prevBlock.hash !== block.previous) || // Block previous hash doesn't match
-			(Block.makeHashOf(block) !== block.hash) { // Block was tampered
+			(Block.createHash(block) !== block.hash) { // Block was tampered
 			valid = false;
 		}
 		return valid;
