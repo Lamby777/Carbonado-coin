@@ -9,7 +9,7 @@ const algo = crypto.createHmac('sha256', secret)
 class Block {
 	constructor(num, previous, body, timestamp, hash) {
 		this.num = num,
-		this.previous = previous,
+		this.previous = previous, // Previous hash
 		this.body = body,
 		this.timestamp = timestamp,
 		this.hash = Block.makeHashOf(this);
@@ -33,6 +33,23 @@ class Block {
 		let block = new Block(num, previous, body, timestamp);
 		//block.hash = makeHashOf(block);
 		return block;
+	};
+
+
+	static validateBlock(block) {
+		// Genesis always valid
+		if (block.num === 0) return true;
+		
+		// Innocent until proven guilty :)
+		let valid = true;
+		let prevBlock = blockchain.filter(val => val.num === block.num-1)[0];
+
+		if ((prevBlock.num + 1 !== block.num) || // Block does not succeed previous
+			(prevBlock.hash !== block.previous) || // Block previous hash doesn't match
+			(Block.makeHashOf(block) !== block.hash) { // Block was tampered
+			valid = false;
+		}
+		return valid;
 	};
 }
 
