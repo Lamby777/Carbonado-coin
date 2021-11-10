@@ -14,3 +14,7 @@ class Block {
 		this.previous = previous;
 	}
 }
+
+function hash(input) {
+	return algo.update(input).digest("hex");
+}
