@@ -7,7 +7,7 @@ const secret = process.env['SECRET'];
 function exp(blockchain) {
 	class Block {
 		constructor(num, previous, body, timestamp, hash) {
-			this.num = num,
+			this.num = num ? num : blockchain.length,
 			this.previous = previous, // Previous hash
 			this.body = body,
 			this.timestamp = timestamp,
