@@ -28,8 +28,7 @@ function exp(blockchain) {
 			let prevBlock = blockchain[blockchain.length-1];
 			let previous = prevBlock.hash;
 			let num = previous.index + 1;
-			let timestamp = new Date().getTime();
-			let block = new Block(num, previous, body, timestamp);
+			let block = new Block(num, previous, body);
 			return block;
 		}
 
