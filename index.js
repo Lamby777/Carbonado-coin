@@ -3,7 +3,10 @@
 
 // "Borrowed" from NodeJS documentation
 const blockchain = [];
+const port = 11870;
 const {Block, hash} = require("./writeup.js")(blockchain);
+const Express = require("express");
+const app = Express();
 
 const genesis = new Block(0, "", {
 	sender: "Dex",
@@ -16,9 +19,23 @@ let a = Block.generate();
 console.log(blockchain);
 console.log(verifyBlockchain(blockchain));
 
-blockchain[1].previous = "lol";
-// A tampered blockchain will fail verification
-console.log(verifyBlockchain(blockchain));
+// Blockchain receive algorithm
+app.post("/nado/newBlock", (req, res) => {
+	if (true /* change to flag later*/) {
+		// Add new block to blockchain
+		Block.generate();
+	}
+});
+
+// Main mining algorithm
+function runCarbon() {
+	//
+}
+
+
+app.listen(port, () => {
+	console.log("Carbonado listening on port " + port);
+});
 
 // Functions
 
