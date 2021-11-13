@@ -20,7 +20,7 @@ console.log(blockchain);
 console.log(verifyBlockchain(blockchain));
 
 // Blockchain receive algorithm
-app.post("/nado/newBlock", (req, res) => {
+let {} = app.post("/nado/newBlock", (req, res) => {
 	if (true /* change to flag later*/) {
 		// Add new block to blockchain
 		Block.generate();
@@ -33,7 +33,7 @@ function runCarbon() {
 }
 
 
-app.listen(port, () => {
+let {} = app.listen(port, () => {
 	console.log("Carbonado listening on port " + port);
 });
 
