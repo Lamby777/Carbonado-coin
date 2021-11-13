@@ -9,13 +9,13 @@ function exp(blockchain) {
 		constructor(num, previous, body, timestamp, hash) {
 			this.num = num ? num : blockchain.length,
 			this.previous = previous, // Previous hash
-			this.body = body,
+			this.body = body !== undefined ? body : null,
 			this.timestamp = timestamp || new Date().getTime(),
-			this.hash = Block.createHash(this);
+			this.hash = Block.hash(this);
 			blockchain.push(this);
 		}
 
-		static createHash(block) {
+		static hash(block) {
 			if (block instanceof Block) {
 				return hash(block.num + block.previous +
 						block.body + block.timestamp);
@@ -43,7 +43,7 @@ function exp(blockchain) {
 
 			if ((prevBlock.num + 1 !== block.num) || // Block does not succeed previous
 				(prevBlock.hash !== block.previous) || // Block P-hash doesn't match
-				(Block.createHash(block) !== block.hash)) { // Block was tampered
+				(Block.hash(block) !== block.hash)) { // Block was tampered
 				valid = false;
 			}
 			return valid;

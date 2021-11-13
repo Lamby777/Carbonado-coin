@@ -14,6 +14,11 @@ const genesis = new Block(0, "", {
 let a = Block.generate();
 
 console.log(blockchain);
+console.log(verifyBlockchain(blockchain));
+
+blockchain[1].previous = "lol";
+// A tampered blockchain will fail verification
+console.log(verifyBlockchain(blockchain));
 
 // Functions
 
