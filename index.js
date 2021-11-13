@@ -1,5 +1,4 @@
 // Yet another random crypto coin
-// writing this comment as a test
 "use strict";
 
 // "Borrowed" from NodeJS documentation
