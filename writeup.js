@@ -10,7 +10,7 @@ function exp(blockchain) {
 			this.num = num ? num : blockchain.length,
 			this.previous = previous, // Previous hash
 			this.body = body,
-			this.timestamp = timestamp,
+			this.timestamp = timestamp || new Date().getTime(),
 			this.hash = Block.createHash(this);
 			blockchain.push(this);
 		}

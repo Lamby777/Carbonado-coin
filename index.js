@@ -5,7 +5,7 @@
 const blockchain = [];
 const {Block, hash} = require("./writeup.js")(blockchain);
 
-const genesis = new Block(0, "", 1636563534866, {
+const genesis = new Block(0, "", {
 	sender: "Dex",
 	recipient: "Tomato",
 	content: {type: "Diamond", quantity: 1},
