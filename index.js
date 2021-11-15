@@ -23,20 +23,26 @@ const {Block, hash} = // Pass blockchain to writeup
 const app = Express();
 app.use(Express.json());
 
-const genesis = Block.generate({
+
+const genesis = new Block(0, "", {
 	sender: "Dex",
 	recipient: "Tomato",
 	content: {type: "Diamond", quantity: 1},
-});
-Block.generate();
+}, 1636962514638);
 
+blockchain.push(genesis);
+
+Block.generate();
 console.log(blockchain);
 
+
+
+// Reply with blockchain
+let {} = app.get("/", (req, res) => {
+	res.json(blockchain);
+});
+
 if (isMiner) (function () {
-	// Reply with blockchain
-	let {} = app.get("/", (req, res) => {
-		res.json(blockchain);
-	});
 
 	// Blockchain receive algorithm
 	let {} = app.post("/newBlock", (req, res) => {
@@ -47,8 +53,21 @@ if (isMiner) (function () {
 	});
 
 	// Main mining algorithm
-	function runCarbon() {
-		//
+	function runCarbon(block) {
+		let solved = false;
+		let res;
+		let nonce = Math.floor(Math.random() * 10000);
+		do {
+			res = Block.hash(block, nonce, "binary");
+			if (false) { // If someone else solved
+				res = null;
+				break;
+			}
+		} while (!solved)
+
+		if (res) { // If didn't exit early
+			// Send results to other nodes
+		}
 	}
 })();
 

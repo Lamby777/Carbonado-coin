@@ -2,7 +2,6 @@
 "use strict";
 
 const crypto = require("crypto");
-const secret = process.env['SECRET'];
 
 function exp(blockchain) {
 	class Block {
@@ -14,10 +13,12 @@ function exp(blockchain) {
 			this.hash = Block.hash(this);
 		}
 
-		static hash(block) {
+		static hash(block, nonce, format) {
 			if (block instanceof Block) {
-				return hash(block.num + block.previous +
-						block.body + block.timestamp);
+				let input = block.num + block.previous +
+						block.body + block.timestamp;
+				if (nonce) input += nonce; // For mining
+				return hash(input, format);
 			} else {
 				throw TypeError("Attempt to get hash of non-block");
 			}
@@ -52,8 +53,7 @@ function exp(blockchain) {
 			let valid = true;
 			let prevBlock = blockchain.filter(val => val.num === block.num-1)[0];
 
-			if (
-				(block.num !== 0 && // First 2 checks don't apply to genesis
+			if ((block.num !== 0 && // First 2 checks don't apply to genesis
 				(!prevBlock || // Block doesn't exist
 				(prevBlock.hash !== block.previous))) // Block P-hash fail
 				
@@ -65,8 +65,15 @@ function exp(blockchain) {
 		}
 	}
 
-	function hash(input) {
-		return crypto.createHmac('sha256', secret).update(input).digest("hex");
+	class UnverifiedBlock extends Block {
+		constructor(...args) {
+			super(...args);
+		}
+	}
+
+	function hash(input, format) {
+		return crypto.createHash("sha256")
+			.update(input).digest(format ? format : "base64");
 	}
 
 	return {
