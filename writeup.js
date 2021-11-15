@@ -12,7 +12,6 @@ function exp(blockchain) {
 			this.body = body !== undefined ? body : null,
 			this.timestamp = timestamp || new Date().getTime(),
 			this.hash = Block.hash(this);
-			blockchain.push(this);
 		}
 
 		static hash(block) {
@@ -34,7 +33,15 @@ function exp(blockchain) {
 				previous = prevBlock.hash;
 			}
 			let num = previous.index + 1;
+
+			// Prevent empty blocks
+			if (!body) {
+				console.log("Attempt to create empty block " + num);
+				return null;
+			}
+
 			let block = new Block(num, previous, body);
+			blockchain.push(block);
 			return block;
 		}
 
