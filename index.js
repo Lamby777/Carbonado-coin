@@ -33,12 +33,7 @@ Block.generate();
 console.log(blockchain);
 
 if (isMiner) (function () {
-	const wrtc = require("wrtc");
-	const Exchange = require("peer-exchange");
-	
-	let carbonEx = new Exchange("Carbon", {wrtc: wrtc});
-	
-	// Blockchain give algorithm (Reply to peers, like a simple torrent)
+	// Reply with blockchain
 	let {} = app.get("/", (req, res) => {
 		res.json(blockchain);
 	});

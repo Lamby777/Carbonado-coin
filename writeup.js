@@ -55,8 +55,8 @@ function exp(blockchain) {
 			let valid = true;
 			let prevBlock = blockchain.filter(val => val.num === block.num-1)[0];
 
-			if ((prevBlock.num + 1 !== block.num) || // Block does not succeed previous
-				(prevBlock.hash !== block.previous) || // Block P-hash doesn't match
+			if ((!prevBlock) || // Block doesn't exist
+				(prevBlock.hash !== block.previous) || // Block P-hash fail
 				(Block.hash(block) !== block.hash)) { // Block was tampered
 				valid = false;
 			}
