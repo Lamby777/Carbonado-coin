@@ -1,0 +1,5 @@
+{
+	// Should this device verify transactions?
+	// Set to false to only carry blockchain data without mining
+	miner: true
+}

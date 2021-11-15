@@ -1,14 +1,21 @@
 // Yet another random crypto coin
 "use strict";
 
-// User Config Constants
-const isMiner = true; // True = Miner, False = Blockchain host
+// Imports
+const Express = require("express");
+const HJSON = require("hjson");
+const fs = require("fs");
+
+// Get User Config Constants
+const configContent = fs.readFileSync("config.hjson", "utf8");
+const config = HJSON.parse(configContent);
+const isMiner = config.miner;
 
 // Code Constants
 const blockchain = [];
+const {Block, hash} = // Pass blockchain to writeup
+	require("./writeup.js")(blockchain);
 const port = 11870;
-const {Block, hash} = require("./writeup.js")(blockchain);
-const Express = require("express");
 const app = Express();
 app.use(Express.json());
 
