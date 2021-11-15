@@ -5,6 +5,7 @@
 const Express = require("express");
 const HJSON = require("hjson");
 const fs = require("fs");
+const net = require("net");
 
 // Get User Config Constants
 const configContent = fs.readFileSync("config.hjson", "utf8");
@@ -36,8 +37,7 @@ if (isMiner) (function () {
 	const Exchange = require("peer-exchange");
 	
 	let carbonEx = new Exchange("Carbon", {wrtc: wrtc});
-
-	var server = net.createServer((socket) => ex.accept(socket)).listen(PORT);
+	
 	// Blockchain give algorithm (Reply to peers, like a simple torrent)
 	let {} = app.get("/", (req, res) => {
 		res.json(blockchain);
@@ -58,8 +58,8 @@ if (isMiner) (function () {
 })();
 
 
-let {} = app.listen(port, () => {
-	console.log("Carbonado listening on port " + port);
+let {} = app.listen(PORT, () => {
+	console.log("Carbonado listening on port " + PORT);
 });
 
 // Functions

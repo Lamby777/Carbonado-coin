@@ -20,6 +20,7 @@
   "dependencies": {
     "express": "^4.17.1",
     "hjson": "^3.2.2",
+    "peer-exchange": "^2.2.0",
     "wrtc": "^0.4.7"
   }
 }
