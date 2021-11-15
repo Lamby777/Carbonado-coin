@@ -69,14 +69,17 @@ function runCarbon(block) {
 	
 	// Update difficulty
 	let difficulty = 12; // Set low because Replit doesn't like mining
+	let difficultyString = "0".repeat(difficulty); // Hash must begin with this
 
 	// Start hashing
 	do {
 		res = Block.hash(block, nonce, "hex");
-		if (hexToBinary(res)
-			.startsWith("0".repeat(difficulty))) solved = true;
 
-		// If someone else solved
+		// Check if hash passes repeating 0s checksum
+		if (hexToBinary(res)
+			.startsWith(difficultyString)) solved = true;
+
+		// Check if someone else solved
 		if (false) {
 			res = null;
 			break;
