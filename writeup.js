@@ -48,15 +48,16 @@ function exp(blockchain) {
 
 
 		static verify(block) {
-			// Genesis always valid
-			if (block.num === 0) return true;
-			
 			// Innocent until proven guilty :)
 			let valid = true;
 			let prevBlock = blockchain.filter(val => val.num === block.num-1)[0];
 
-			if ((!prevBlock) || // Block doesn't exist
-				(prevBlock.hash !== block.previous) || // Block P-hash fail
+			if (
+				(block.num !== 0 && // First 2 checks don't apply to genesis
+				(!prevBlock || // Block doesn't exist
+				(prevBlock.hash !== block.previous))) // Block P-hash fail
+				
+				|| // Genesis checks this part
 				(Block.hash(block) !== block.hash)) { // Block was tampered
 				valid = false;
 			}
