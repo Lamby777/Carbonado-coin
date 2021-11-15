@@ -10,19 +10,16 @@ const net = require("net");
 // Get User Config Constants
 const configContent = fs.readFileSync("config.hjson", "utf8");
 const config = HJSON.parse(configContent);
-const isMiner = config.miner;
+
+// Hard Constants
+const PORT = 11870;
 
 // Code Constants
-const PORT = 11870;
 const blockchain = [];
 const {Block, hash} = // Pass blockchain to writeup
 	require("./writeup.js")(blockchain);
-
-
-
 const app = Express();
 app.use(Express.json());
-
 
 const genesis = new Block(0, "", {
 	sender: "Dex",
@@ -31,7 +28,6 @@ const genesis = new Block(0, "", {
 }, 1636962514638);
 
 blockchain.push(genesis);
-
 Block.generate();
 console.log(blockchain);
 
@@ -42,8 +38,7 @@ let {} = app.get("/", (req, res) => {
 	res.json(blockchain);
 });
 
-if (isMiner) {
-
+if (miner) {
 	// Blockchain receive algorithm
 	let {} = app.post("/newBlock", (req, res) => {
 		if (true /* change to flag later*/) {
@@ -51,10 +46,7 @@ if (isMiner) {
 			Block.generate();
 		}
 	});
-
-	//
 };
-
 
 let {} = app.listen(PORT, () => {
 	console.log("Carbonado listening on port " + PORT);
@@ -62,18 +54,10 @@ let {} = app.listen(PORT, () => {
 
 let {} = runCarbon(genesis);
 
-// Functions
 
-function verifyBlockchain(blockchain) {
-	return blockchain.every(n => Block.verify(n));
-}
 
-function blockchainLengthDilemma(newChain) {
-	if (newChain.length > blockchain.length &&	// New chain longer
-		verifyBlockchain(newChain)) {			// New chain valid
-		blockchain = newChain;
-	}
-}
+
+
 
 // Main mining algorithm
 function runCarbon(block) {
@@ -109,6 +93,19 @@ function runCarbon(block) {
 	}
 }
 
+// Functions
+
+function verifyBlockchain(blockchain) {
+	return blockchain.every(n => Block.verify(n));
+}
+
+function blockchainLengthDilemma(newChain) {
+	if (newChain.length > blockchain.length &&	// New chain longer
+		verifyBlockchain(newChain)) {			// New chain valid
+		blockchain = newChain;
+	}
+}
+
 // Gonna be real with you, I took this straight from "The Stack"
 function hexToBinary(hex){
 	//hex = hex.replace("0x", "").toLowerCase();
@@ -133,7 +130,5 @@ function hexToBinary(hex){
 			case 'f': out += "1111"; break;
 			default: return "";
 		}
-	}
-
-return out;
+	} return out;
 }
