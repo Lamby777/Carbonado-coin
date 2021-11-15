@@ -12,10 +12,13 @@ const config = HJSON.parse(configContent);
 const isMiner = config.miner;
 
 // Code Constants
+const PORT = 11870;
 const blockchain = [];
 const {Block, hash} = // Pass blockchain to writeup
 	require("./writeup.js")(blockchain);
-const port = 11870;
+
+
+
 const app = Express();
 app.use(Express.json());
 
@@ -30,10 +33,11 @@ console.log(blockchain);
 
 if (isMiner) (function () {
 	const wrtc = require("wrtc");
-	const Exchange = requre("peer-exchange");
+	const Exchange = require("peer-exchange");
 	
 	let carbonEx = new Exchange("Carbon", {wrtc: wrtc});
-	
+
+	var server = net.createServer((socket) => ex.accept(socket)).listen(PORT);
 	// Blockchain give algorithm (Reply to peers, like a simple torrent)
 	let {} = app.get("/", (req, res) => {
 		res.json(blockchain);
