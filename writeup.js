@@ -25,8 +25,14 @@ function exp(blockchain) {
 		}
 
 		static generate(body) {
-			let prevBlock = blockchain[blockchain.length-1];
-			let previous = prevBlock.hash;
+			let prevBlock, previous;
+			if (blockchain.length === 0) {
+				prevBlock = null;
+				previous = "";
+			} else {
+				prevBlock = blockchain[blockchain.length-1];
+				previous = prevBlock.hash;
+			}
 			let num = previous.index + 1;
 			let block = new Block(num, previous, body);
 			return block;
