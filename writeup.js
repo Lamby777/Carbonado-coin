@@ -24,15 +24,16 @@ function exp(blockchain) {
 		}
 
 		static generate(body) {
-			let prevBlock, previous;
+			let prevBlock, previous, num;
 			if (blockchain.length === 0) {
 				prevBlock = null;
 				previous = "";
+				num = 0;
 			} else {
 				prevBlock = blockchain[blockchain.length-1];
 				previous = prevBlock.hash;
+				num = prevBlock.num + 1;
 			}
-			let num = previous.index + 1;
 
 			// Prevent empty blocks
 			if (!body) {
