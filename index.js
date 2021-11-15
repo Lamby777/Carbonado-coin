@@ -5,7 +5,6 @@
 const Express = require("express");
 const HJSON = require("hjson");
 const fs = require("fs");
-const net = require("net");
 
 // Get User Config Constants
 const configContent = fs.readFileSync("config.hjson", "utf8");
@@ -50,9 +49,12 @@ if (config.miner) {
 
 let {} = app.listen(PORT, () => {
 	console.log("Carbonado listening on port " + PORT);
-});
 
-let {} = runCarbon(genesis);
+	if (config.miner) {
+		// Begin mining
+		let {} = runCarbon(genesis);
+	}
+});
 
 
 
@@ -63,10 +65,10 @@ let {} = runCarbon(genesis);
 function runCarbon(block) {
 	let res,
 		solved = false,
-		nonce = Math.floor(Math.random() * 10000);
+		nonce = generateNonce();
 	
 	// Update difficulty
-	let difficulty = 18;
+	let difficulty = 12; // Set low because Replit doesn't like mining
 
 	// Start hashing
 	do {
@@ -104,6 +106,10 @@ function blockchainLengthDilemma(newChain) {
 		verifyBlockchain(newChain)) {			// New chain valid
 		blockchain = newChain;
 	}
+}
+
+function generateNonce() {
+	return parseInt(Math.random() * Date.now());
 }
 
 // Gonna be real with you, I took this straight from "The Stack"
