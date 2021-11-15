@@ -38,7 +38,7 @@ let {} = app.get("/", (req, res) => {
 	res.json(blockchain);
 });
 
-if (miner) {
+if (config.miner) {
 	// Blockchain receive algorithm
 	let {} = app.post("/newBlock", (req, res) => {
 		if (true /* change to flag later*/) {
