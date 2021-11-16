@@ -2,4 +2,7 @@
 	// Should this device verify transactions?
 	// Set to false to only carry blockchain data without mining
 	miner: true
+
+	// Set this to your own wallet to receive mining rewards
+	wallet: InsertPublicKeyHere
 }

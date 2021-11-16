@@ -27,12 +27,16 @@ const genesis = new Block(0, "", {
 }, 1636962514638);
 
 blockchain.push(genesis);
-Block.generate();
+Block.generate({
+	sender: "Another Public Key",
+	recipient: "Some Guy",
+	content: {type: "Netherite", quantity: 0.25}
+});
 console.log(blockchain);
 
 
 
-// Reply with blockchain
+// Reply with blockchain if requested
 let {} = app.get("/", (req, res) => {
 	res.json(blockchain);
 });
@@ -53,6 +57,7 @@ let {} = app.listen(PORT, () => {
 	if (config.miner) {
 		// Begin mining
 		let {} = runCarbon(genesis);
+		let {} = runCarbon(blockchain[1]);
 	}
 });
 
@@ -89,8 +94,7 @@ function runCarbon(block) {
 	} while (!solved)
 
 	if (res) { // If didn't exit early
-		console.log(hexToBinary(res));
-		console.log(nonce);
+		console.log("Verified block " + block.num + " with nonce " + nonce);
 		// Send results to other nodes
 		
 		// Then resolve promise

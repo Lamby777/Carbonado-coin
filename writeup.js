@@ -10,14 +10,17 @@ function exp(blockchain) {
 			this.previous = previous, // Previous hash
 			this.body = body !== undefined ? body : null,
 			this.timestamp = timestamp || new Date().getTime(),
+			this.difficultyLocale = null, // Difficulty at the time of verification
+			this.nonces = [],
 			this.hash = Block.hash(this);
 		}
 
 		static hash(block, nonce, format) {
 			if (block instanceof Block) {
+				let trueNonce = nonce ? nonce : block.nonces[0]; // For mining 
 				let input = block.num + block.previous +
 						block.body + block.timestamp;
-				if (nonce) input += nonce; // For mining
+				if (trueNonce) input += trueNonce;
 				return hash(input, format);
 			} else {
 				throw TypeError("Attempt to get hash of non-block");
@@ -62,12 +65,6 @@ function exp(blockchain) {
 				valid = false;
 			}
 			return valid;
-		}
-	}
-
-	class UnverifiedBlock extends Block {
-		constructor(...args) {
-			super(...args);
 		}
 	}
 
