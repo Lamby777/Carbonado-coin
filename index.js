@@ -5,10 +5,13 @@
 const Express = require("express");
 const HJSON = require("hjson");
 const fs = require("fs");
+const cleanup = require("./cleanup");
 
-// Get User Config Constants
+// Read files
 const configContent = fs.readFileSync("config.hjson", "utf8");
+const memoryFileContent = fs.readFileSync("nodemem.json", "utf8");
 const config = HJSON.parse(configContent);
+let mem = JSON.parse(memoryFileContent);
 
 // Hard Constants
 const PORT = 11870;
@@ -101,6 +104,27 @@ function runCarbon(block) {
 		return res;
 	}
 }
+
+
+// On exit
+
+let {} = process.on("cleanup", () => cleanup(mem));
+
+let {} = process.on("exit", () => {
+	process.emit("cleanup");
+});
+
+let {} = process.on("SIGINT", () => {
+	process.exit(2);
+});
+
+
+
+
+
+
+
+
 
 // Functions
 

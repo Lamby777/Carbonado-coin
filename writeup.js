@@ -1,4 +1,4 @@
-// Code writeup for use in index.js
+// Code writeup module for use in index.js
 "use strict";
 
 const crypto = require("crypto");
@@ -68,6 +68,12 @@ function exp(blockchain) {
 		}
 	}
 
+	class Transaction {
+		constructor() {
+			//
+		}
+	}
+
 	function hash(input, format) {
 		return crypto.createHash("sha256")
 			.update(input).digest(format ? format : "base64");
@@ -75,6 +81,7 @@ function exp(blockchain) {
 
 	return {
 		Block: Block,
+		Transaction: Transaction,
 		hash: hash,
 	}
 }
