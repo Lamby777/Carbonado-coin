@@ -68,7 +68,7 @@ function runCarbon(block) {
 		nonce = generateNonce();
 	
 	// Update difficulty
-	let difficulty = 12; // Set low because Replit doesn't like mining
+	let difficulty = 15; // Set low because Replit doesn't like mining
 	let difficultyString = "0".repeat(difficulty); // Hash must begin with this
 
 	// Start hashing
