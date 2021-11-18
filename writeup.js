@@ -88,7 +88,7 @@ function exp(blockchain) {
 				.map((txO) => txO.addr + txO.amount)
 				.reduce((a, b) => a + b, "");
 			
-			return Transaction.hash(inputs, outputs)
+			return Transaction.hash(inputData, outputData)
 		}
 
 		// Does the same thing as hash()
