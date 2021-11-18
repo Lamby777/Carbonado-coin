@@ -3,6 +3,39 @@
 	// Set to false to only carry blockchain data without mining
 	miner: true
 
+
 	// Set this to your own wallet to receive mining rewards
 	wallet: InsertPublicKeyHere
+
+	/* Block Stages:
+	*
+	* Stages are different phases of a block's validation.
+	* Lower Stages give lower rewards, but are easier to mine.
+	* Choose your mining Stage based on your device's power.
+	*
+	* 5: Server farms and rented hashpower
+	* 4: 3D Render PCs, Gaming PCs
+	* 3: Average PCs, Gaming laptops
+	* 2: Mid/Low-end laptops
+	* 1: Phones, Tablets, Chromebooks
+	*/
+
+	// Which stage to prioritize mining for.
+	mineStagePriority: 3
+
+
+	// List of Mining Router services to put yourself on.
+	// (Your IP will be shown for other miners to join the network)
+	// Your IP may be permanently saved, depending on the server.
+	// If you add to this list, make sure to read their privacy policy!
+	pushToRouters: [
+		"https://carbonado.tk/router"
+	]
+
+
+	// Similarly, this is the place that your client gets
+	// fellow peers' IPs from, in order to begin mining.
+	pullFromRouters: [
+		"https://carbonado.tk/router"
+	]
 }

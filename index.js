@@ -6,12 +6,19 @@ const Express = require("express");
 const HJSON = require("hjson");
 const fs = require("fs");
 const cleanup = require("./cleanup");
+const axios = require('axios');
 
 // Read files
 const configContent = fs.readFileSync("config.hjson", "utf8");
 const memoryFileContent = fs.readFileSync("nodemem.json", "utf8");
 const config = HJSON.parse(configContent);
-let mem = JSON.parse(memoryFileContent);
+let mem = {};
+let peers = [];
+try {
+	mem = JSON.parse(memoryFileContent);
+} catch(e) {
+	fs.writeFileSync("./nodemem.json", JSON.stringify(mem), "utf8");
+}
 
 // Hard Constants
 const PORT = 11870;
@@ -45,6 +52,16 @@ let {} = app.get("/", (req, res) => {
 });
 
 if (config.miner) {
+	const axios = require('axios');
+	let routers = config.pushToRouters
+
+	routers.forEach((r) => {
+		let {} = axios.post(r, {}
+		).catch((error) => {
+			console.error(error);
+		});
+	});
+
 	// Blockchain receive algorithm
 	let {} = app.post("/newBlock", (req, res) => {
 		if (true /* change to flag later*/) {
@@ -97,7 +114,7 @@ function runCarbon(block) {
 	} while (!solved)
 
 	if (res) { // If didn't exit early
-		console.log("Verified block " + block.num + " with nonce " + nonce);
+		console.log(`Verified block ${block.num} nonce ${nonce}`);
 		// Send results to other nodes
 		
 		// Then resolve promise
@@ -117,10 +134,6 @@ let {} = process.on("exit", () => {
 let {} = process.on("SIGINT", () => {
 	process.exit(2);
 });
-
-
-
-
 
 
 

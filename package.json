@@ -18,6 +18,8 @@
   },
   "homepage": "https://github.com/Lamby777/Carbonado-coin#readme",
   "dependencies": {
+    "axios": "^0.24.0",
+    "elliptic": "^6.5.4",
     "express": "^4.17.1",
     "hjson": "^3.2.2",
     "peer-exchange": "^2.2.0",

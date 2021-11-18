@@ -2,6 +2,8 @@
 "use strict";
 
 const crypto = require("crypto");
+const EC = require("elliptic").ec;
+const ec = new EC("secp256k1");
 
 function exp(blockchain) {
 	class Block {
@@ -68,7 +70,49 @@ function exp(blockchain) {
 		}
 	}
 
+
+
 	class Transaction {
+		constructor(id, inputs, outputs) {
+			this.id = id,
+			this.inputs = inputs,
+			this.outputs = outputs;
+		}
+
+		get id() {
+			let inputData = this.inputs
+				.map((txI) => txI.to)
+				.reduce((a, b) => a + b, "");
+
+			let outputData = this.outputs
+				.map((txO) => txO.addr + txO.amount)
+				.reduce((a, b) => a + b, "");
+			
+			return Transaction.hash(inputs, outputs)
+		}
+
+		// Does the same thing as hash()
+		// Only added this for code maintainability
+		static hash(inputs, outputs) {
+			return hash(inputs + outputs);
+		}
+	}
+
+	class TxI {
+		constructor(to, sig) {
+			this.to = to,
+			this.sig = sig;
+		}
+	}
+
+	class TxO {
+		constructor(addr, amount) {
+			this.addr = addr,
+			this.amount = amount;
+		}
+	}
+
+	class UTxO {
 		constructor() {
 			//
 		}
@@ -76,7 +120,7 @@ function exp(blockchain) {
 
 	function hash(input, format) {
 		return crypto.createHash("sha256")
-			.update(input).digest(format ? format : "base64");
+			.update(input).digest(format ? format : "hex");
 	}
 
 	return {
