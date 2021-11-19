@@ -1,5 +1,6 @@
 // Yet another random crypto coin
 "use strict";
+
 let blockchain = [];
 
 // Imports
@@ -38,8 +39,8 @@ app.use(Express.json());
 
 const genesis = new Block(0, "", {
 	content: [
-		new TxI(0,0),
-		new TxO(0, 0),
+//		new TxO(addr, amount, spent),
+//		new TxI(fromNum, txId, amount, sig),
 	],
 }, 1636962514638);
 
@@ -161,7 +162,7 @@ function generateNonce() {
 }
 
 // Gonna be real with you, I took this straight from "The Stack"
-function hexToBinary(hex){
+function hexToBinary(hex) {
 	//hex = hex.replace("0x", "").toLowerCase();
 	var out = "";
 	for(var c of hex) {

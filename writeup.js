@@ -99,9 +99,10 @@ function exp(blockchain) {
 	}
 
 	class TxI {
-		constructor(fromNum, /*fromId,*/ sig) {
+		constructor(fromNum, fromId, amount, sig) {
 			this.fromNum = fromNum,
-			//this.fromId = fromId,
+			this.fromId = fromId,
+			this.amount = amount,
 			this.sig = sig;
 		}
 
@@ -126,8 +127,8 @@ function exp(blockchain) {
 		// List of all TXOs, including spent
 		static list = [];
 
-		constructor(num, addr, amount, spent) {
-			this.num = num,
+		constructor(addr, amount, spent) {
+			this.num = TxO.list.length,
 			this.addr = addr,
 			this.amount = amount;
 			this.spent = !!spent;
