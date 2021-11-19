@@ -123,7 +123,8 @@ function exp(blockchain) {
 	}
 
 	class TxO {
-		static unspent = [];
+		// List of all TXOs, including spent
+		static list = [];
 
 		constructor(num, addr, amount, spent) {
 			this.num = num,
@@ -132,11 +133,17 @@ function exp(blockchain) {
 			this.spent = !!spent;
 
 			// Push to UTXOs list if not spent
-			if (!spent) TxO.unspent.push(this);
+			TxO.list.push(this);
 		}
 
+		// Query TXO list for unspent with matching num
 		static getUnspentByNum(num) {
-			return unspent.find(val => val.num === num);
+			return TxO.list.find(val =>
+				(val.num === num) && (!val.spent));
+		}
+
+		static get unspent() {
+			return TxO.filter(val => !val.spent);
 		}
 	}
 
