@@ -1,6 +1,6 @@
 // Yet another random crypto coin
 "use strict";
-const blockchain = [];
+let blockchain = [];
 
 // Imports
 const Express = require("express");

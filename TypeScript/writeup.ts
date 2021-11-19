@@ -5,8 +5,16 @@ const crypto = require("crypto");
 const EC = require("elliptic").ec;
 const ec = new EC("secp256k1");
 
-function exp(blockchain) {
+export function exp(blockchain): object {
 	class Block {
+		public num: number;
+		public previous: string;
+		public body: any;
+		public timestamp: number;
+		public difficultyLocale: number;
+		public nonces: number[];
+		public hash: string;
+
 		constructor(num, previous, body, timestamp, hash) {
 			this.num = num ? num : blockchain.length,
 			this.previous = previous, // Previous hash
@@ -17,7 +25,7 @@ function exp(blockchain) {
 			this.hash = Block.hash(this);
 		}
 
-		static hash(block, nonce, format) {
+		static hash(block, nonce?: number, format?: string) {
 			if (block instanceof Block) {
 				let trueNonce = nonce ? nonce : block.nonces[0]; // For mining 
 				let input = block.num + block.previous +
@@ -132,5 +140,3 @@ function exp(blockchain) {
 		hash: hash,
 	}
 }
-
-module.exports = exp;

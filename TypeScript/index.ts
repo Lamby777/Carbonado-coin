@@ -1,21 +1,21 @@
 // Yet another random crypto coin
 "use strict";
-const blockchain = [];
+let blockchain: Object[] = [];
 
 // Imports
-const Express = require("express");
-const HJSON = require("hjson");
-const fs = require("fs");
-const cleanup = require("./cleanup");
-const axios = require('axios');
+import * as Express	from "express";
+import * as HJSON	from "hjson";
+import * as fs		from "fs";
+import * as cleanup	from "./cleanup";
 
 // Import blockchain classes/functions from writeup
+import * as writeup from "./writeup";
 const {
 	Block,
 	Transaction,
 	TxI, TxO, UTxO,
 	hash,
-} = require("./writeup.js")(blockchain);
+} = writeup(blockchain);
 
 
 // Read files
@@ -157,7 +157,7 @@ function blockchainLengthDilemma(newChain) {
 }
 
 function generateNonce() {
-	return parseInt(Math.random() * Date.now());
+	return Math.random() * Date.now();
 }
 
 // Gonna be real with you, I took this straight from "The Stack"
