@@ -99,22 +99,44 @@ function exp(blockchain) {
 	}
 
 	class TxI {
-		constructor(to, sig) {
-			this.to = to,
+		constructor(fromNum, /*fromId,*/ sig) {
+			this.fromNum = fromNum,
+			//this.fromId = fromId,
 			this.sig = sig;
+		}
+
+		// Honestly, I'm kinda confused what this method does,
+		// but it works and I'm happy about that.
+		// Thanks, lhartikk, I guess.
+		static sign(transaction, txI, privKey, UTXOs) {
+			if (txI instanceof Number) {
+				txI = transaction.inputs[txInum];
+			}
+
+			const sigData = transaction.id();
+			const referencedUTXO = TxO.getUnspentByNum(
+				/*txI.fromId,*/ txI.fromNum, UTXOs);
+			//const referencedAddress = referencedUTXO.address;
+			const key = ec.keyFromPrivate(privKey, "hex");
+			return key.sign(sigData).toDER();
 		}
 	}
 
 	class TxO {
-		constructor(addr, amount) {
+		static unspent = [];
+
+		constructor(num, addr, amount, spent) {
+			this.num = num,
 			this.addr = addr,
 			this.amount = amount;
-		}
-	}
+			this.spent = !!spent;
 
-	class UTxO {
-		constructor() {
-			//
+			// Push to UTXOs list if not spent
+			if (!spent) TxO.unspent.push(this);
+		}
+
+		static getUnspentByNum(num) {
+			return unspent.find(val => val.num === num);
 		}
 	}
 
@@ -128,7 +150,6 @@ function exp(blockchain) {
 		Transaction: Transaction,
 		TxI: TxI,
 		TxO: TxO,
-		UTxO: UTxO,
 		hash: hash,
 	}
 }

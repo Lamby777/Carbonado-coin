@@ -7,13 +7,12 @@ const Express = require("express");
 const HJSON = require("hjson");
 const fs = require("fs");
 const cleanup = require("./cleanup");
-const axios = require('axios');
 
 // Import blockchain classes/functions from writeup
 const {
 	Block,
 	Transaction,
-	TxI, TxO, UTxO,
+	TxI, TxO,
 	hash,
 } = require("./writeup.js")(blockchain);
 
@@ -39,7 +38,8 @@ app.use(Express.json());
 
 const genesis = new Block(0, "", {
 	content: [
-		new TxI(),
+		new TxI(0,0),
+		new TxO(0, 0),
 	],
 }, 1636962514638);
 
