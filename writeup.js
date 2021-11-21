@@ -73,8 +73,7 @@ function exp(blockchain) {
 
 
 	class Transaction {
-		constructor(id, inputs, outputs) {
-			this.id = id,
+		constructor(inputs, outputs) {
 			this.inputs = inputs,
 			this.outputs = outputs;
 		}
@@ -99,11 +98,11 @@ function exp(blockchain) {
 	}
 
 	class TxI {
-		constructor(fromNum, fromId, amount, sig) {
+		constructor(fromNum, fromId, amount) {
 			this.fromNum = fromNum,
 			this.fromId = fromId,
 			this.amount = amount,
-			this.sig = sig;
+			this.sig = "";
 		}
 
 		// Honestly, I'm kinda confused what this method does,
@@ -145,6 +144,11 @@ function exp(blockchain) {
 
 		static get unspent() {
 			return TxO.filter(val => !val.spent);
+		}
+
+		static updateUnspent() {
+			// Check blockchain for new in/outs and
+			// update spent status of old UTXOs
 		}
 	}
 

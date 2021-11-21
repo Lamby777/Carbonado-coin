@@ -39,6 +39,14 @@ let c = 50;
 const app = Express();
 app.use(Express.json());
 
+let tx = new Transaction(
+	[
+		new TxI(0, "id of txo", 2),
+	], [
+		new TxO("public key", 2, false),
+	],
+);
+
 const genesis = new Block(0, "", {
 	content: [
 //		new TxO(addr, amount, spent),
