@@ -30,6 +30,7 @@ try {
 	fs.writeFileSync("./nodemem.json", JSON.stringify(mem), "utf8");
 }
 
+
 // Hard Constants
 const PORT = 11870;
 const MINER_REWARD = 1;
@@ -65,14 +66,50 @@ let {} = app.get("/", (req, res) => {
 	res.json(blockchain);
 });
 
-if (config.miner) {
-	const axios = require('axios');
-	let routers = config.pushToRouters
+// Respond to "alive" checks in peer discovery
+let {} = app.get("/ping", (req, res) => {
+	res.json({
+		miner: isMiner,
+	});
+});
 
-	routers.forEach((r) => {
+if (config.miner) {
+	const axios = require("axios").default;
+	let routersPush = config.pushToRouters;
+	let routersPull = config.pullFromRouters;
+
+	// PEER DISCOVERY
+
+	// Put own IP on router lists
+	routersPush.forEach((r) => {
 		let {} = axios.post(r, {}
 		).catch((error) => {
 			console.error(error);
+		});
+	});
+
+	// Take IPs from router lists
+	routersPull.forEach((r) => {
+		// Run for each router
+		let {} = axios.get(r).then((res) => {
+			let miners = res.data.content.miners;
+			let ominers = miners.filter(async (peer) => {
+				// Run for each peer in router
+				let val = null;
+				axios.get("http://" + peer + "/ping").then((res) => {
+					console.log("Active Peer " + peer);
+					val = true;
+				}).catch((e) => {
+					console.error(e.message);
+					val = false;
+				}).finally(() => {
+					return val;
+				});
+			});
+			//peers = combineArrays(peers, ominers);
+			peers = peers.concat(ominers);
+		}).catch((e) => {console.error(e)}).finally(() => {
+			setTimeout(_ => console.log(peers), 3000);
 		});
 	});
 
@@ -191,4 +228,14 @@ function hexToBinary(hex) {
 			default: return "";
 		}
 	} return out;
+}
+
+// More "borrowed" code from Tamás Sallai
+async function asyncFilter(arr, predicate) {
+    const results = await Promise.all(arr.map(predicate));
+    return arr.filter((_, index) => results[index]);
+}
+
+function combineArrays(a, b) {
+	return a.concat(b.filter((val) => a.includes(val)));
 }

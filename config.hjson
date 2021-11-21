@@ -36,6 +36,6 @@
 	// Similarly, this is the place that your client gets
 	// fellow peers' IPs from, in order to begin mining.
 	pullFromRouters: [
-		"https://carbonado.tk/router"
+		"https://carbonado.tk/api/router"
 	]
 }
