@@ -81,11 +81,11 @@ function exp(blockchain) {
 
 		get id() {
 			let inputData = this.inputs
-				.map((txI) => txI.to)
+				.map((txI) => txI.fromNum + txI.fromId + txI.amount)
 				.reduce((a, b) => a + b, "");
 
 			let outputData = this.outputs
-				.map((txO) => txO.addr + txO.amount)
+				.map((txO) => txO.num + txO.addr + txO.amount)
 				.reduce((a, b) => a + b, "");
 			
 			return Transaction.hash(inputData, outputData);

@@ -48,11 +48,9 @@ const genesis = new Block(0, "", {
 
 blockchain.push(genesis);
 
-
-
 console.log(blockchain);
 
-console.log(process.version);
+
 
 // Reply with blockchain if requested
 let {} = app.get("/", (req, res) => {
@@ -87,9 +85,6 @@ let {} = app.listen(PORT, () => {
 		let {} = runCarbon(genesis);
 	}
 });
-
-
-
 
 
 
