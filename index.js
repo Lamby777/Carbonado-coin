@@ -32,6 +32,8 @@ try {
 
 // Hard Constants
 const PORT = 11870;
+const MINER_REWARD = 1;
+let c = 50;
 
 // Code Constants
 const app = Express();
@@ -50,7 +52,7 @@ blockchain.push(genesis);
 
 console.log(blockchain);
 
-
+console.log(process.version);
 
 // Reply with blockchain if requested
 let {} = app.get("/", (req, res) => {
