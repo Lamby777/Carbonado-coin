@@ -90,10 +90,12 @@ if (config.miner) {
 
 	// Take IPs from router lists
 	routersPull.forEach((r) => {
-		// Run for each router
 		let {} = axios.get(r).then((res) => {
+			// Run for each router
+
 			let miners = res.data.content.miners;
 			let ominers = miners.filter(async (peer) => {
+
 				// Run for each peer in router
 				let val = null;
 				axios.get("http://" + peer + "/ping").then((res) => {
@@ -106,10 +108,12 @@ if (config.miner) {
 					return val;
 				});
 			});
-			//peers = combineArrays(peers, ominers);
-			peers = peers.concat(ominers);
+
+			peers = combineArrays(peers, ominers);
+			//peers = peers.concat(ominers);
+			console.log(peers);
 		}).catch((e) => {console.error(e)}).finally(() => {
-			setTimeout(_ => console.log(peers), 3000);
+			//setTimeout(_ => console.log(peers), 3000);
 		});
 	});
 
@@ -237,5 +241,5 @@ async function asyncFilter(arr, predicate) {
 }
 
 function combineArrays(a, b) {
-	return a.concat(b.filter((val) => a.includes(val)));
+	return a.concat(b.filter((val) => !a.includes(val)));
 }
