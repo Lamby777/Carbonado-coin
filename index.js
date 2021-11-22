@@ -68,8 +68,9 @@ let {} = app.get("/", (req, res) => {
 
 // Respond to "alive" checks in peer discovery
 let {} = app.get("/ping", (req, res) => {
+	console.log("yo");
 	res.json({
-		miner: isMiner,
+		miner: config.miner,
 	});
 });
 
@@ -144,7 +145,7 @@ function runCarbon(block) {
 		nonce = generateNonce();
 	
 	// Update difficulty
-	let difficulty = 15; // Set low because Replit doesn't like mining
+	let difficulty = 3; // Set low because Replit doesn't like mining
 	let difficultyString = "0".repeat(difficulty); // Hash must begin with this
 
 	// Start hashing
