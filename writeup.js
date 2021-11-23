@@ -7,7 +7,7 @@ const ec = new EC("secp256k1");
 
 function exp(blockchain) {
 	class Block {
-		constructor(num, previous, body, timestamp, hash) {
+		constructor(num, previous, body, timestamp) {
 			this.num = num ? num : blockchain.length,
 			this.previous = previous, // Previous hash
 			this.body = body !== undefined ? body : null,
