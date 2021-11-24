@@ -1,7 +1,7 @@
 // Yet another random crypto coin
 "use strict";
 
-let blockchain: any[];
+let blockchain: any[] = [];
 const ALPHA58 = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
 
 // Imports
@@ -9,7 +9,7 @@ import * as Express from "express";
 import * as HJSON from "hjson";
 import * as fs from "fs";
 import * as baseX from "base-x";
-import * as cleanup from "./cleanup";
+import cleanup from "./cleanup";
 const base58 = baseX(ALPHA58);
 
 // Import blockchain classes/functions from writeup
@@ -26,7 +26,7 @@ const configContent = fs.readFileSync("config.hjson", "utf8");
 const memoryFileContent = fs.readFileSync("nodemem.json", "utf8");
 const config = HJSON.parse(configContent);
 let mem = {};
-let peers = [];
+let peers: string[] = [];
 try {
 	mem = JSON.parse(memoryFileContent);
 } catch(e) {
@@ -85,27 +85,27 @@ if (config.miner) {
 	// PEER DISCOVERY
 
 	// Put own IP on router lists
-	routersPush.forEach((r) => {
+	routersPush.forEach((r: string) => {
 		let {} = axios.post(r, {}
-		).catch((error) => {
-			console.error(error);
+		).catch((e: Error) => {
+			console.error(e);
 		});
 	});
 
 	// Take IPs from router lists
-	routersPull.forEach((r) => {
-		let {} = axios.get(r).then((res) => {
+	routersPull.forEach((r: string) => {
+		let {} = axios.get(r).then((res: any) => {
 			// Run for each router
 
 			let miners = res.data.content.miners;
-			let ominers = miners.filter(async (peer) => {
+			let ominers = miners.filter(async (peer: any) => {
 
 				// Run for each peer in router
-				let val = null;
-				axios.get("http://" + peer + "/ping").then((res) => {
+				let val: boolean = null;
+				axios.get("http://" + peer + "/ping").then((res: any) => {
 					console.log("Active Peer " + peer);
 					val = true;
-				}).catch((e) => {
+				}).catch((e: Error) => {
 					console.error(e.message);
 					val = false;
 				}).finally(() => {
@@ -116,7 +116,7 @@ if (config.miner) {
 			peers = combineArrays(peers, ominers);
 			//peers = peers.concat(ominers);
 			console.log(peers);
-		}).catch((e) => {console.error(e)}).finally(() => {
+		}).catch((e: Error) => {console.error(e)}).finally(() => {
 			//setTimeout(_ => console.log(peers), 3000);
 		});
 	});
@@ -142,7 +142,7 @@ let {} = app.listen(PORT, () => {
 
 
 // Main mining algorithm
-function runCarbon(block) {
+function runCarbon(block: InstanceType<typeof Block>) {
 	let res,
 		solved = false,
 		nonce = generateNonce();
@@ -201,11 +201,11 @@ let {} = process.on("SIGINT", () => {
  * @param {Array} blockchain
  * @returns {Boolean}
  */
-function verifyBlockchain(blockchain) {
+function verifyBlockchain(blockchain: any[]) {
 	return blockchain.every(n => Block.verify(n));
 }
 
-function blockchainLengthDilemma(newChain) {
+function blockchainLengthDilemma(newChain: any[]) {
 	if (newChain.length > blockchain.length &&	// New chain longer
 		verifyBlockchain(newChain)) {			// New chain valid
 		blockchain = newChain;
@@ -222,7 +222,7 @@ function generateNonce() {
  * 
  * @returns {String}
  */
-function hexToBinary(hex) {
+function hexToBinary(hex: string) {
 	hex = hex.replace("0x", "").toLowerCase();
 	var out = "";
 	for(var c of hex) {
@@ -248,35 +248,19 @@ function hexToBinary(hex) {
 	} return out;
 }
 
-/**
- * Merges 2 arrays while removing duplicates
- * 
- * @param {Array} a
- * @param {Array} b
- * @returns {Array}
- */
-function combineArrays(a, b) {
+// Merges 2 arrays while removing duplicates
+function combineArrays(a: any[], b: any[]) {
 	return a.concat(b.filter((val) => !a.includes(val)));
 }
 
-/**
- * Generates a wallet address from Public Key
- * 
- * @param {String} key
- * @returns {String}
-*/
-function addressFromPubkey(key) {
+// Generates a wallet address from Public Key
+function addressFromPubkey(key: string) {
 	key = hash(key, "hex");
 	let addr = base58.encode(Buffer.from(key));
 }
 
-/**
- * Reverse of addressFromPubkey();
- * 
- * @param {String} addr
- * @returns {Boolean}
- */
-function validateWalletAddress(addr) {
+// Reverse of addressFromPubkey();
+function validateWalletAddress(addr: string) {
 	//
 }
 

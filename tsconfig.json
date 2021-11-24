@@ -9,6 +9,7 @@
 	},
 	"files": [
 		"index.ts",
-		"writeup.ts"
+		"writeup.ts",
+		"cleanup.ts"
 	]
 }

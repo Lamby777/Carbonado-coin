@@ -149,7 +149,7 @@ function exp(blockchain: any[]) {
 
 	class TxO {
 		// List of all TXOs, including spent
-		public static list: TxO[];
+		public static list: TxO[] = [];
 		public num: number;
 		public addr: string;
 		public amount: number;
@@ -198,5 +198,5 @@ function exp(blockchain: any[]) {
 	}
 }
 
-export default exp;
+export = exp;
 //module.exports = exp;

@@ -1,7 +1,7 @@
 "use strict";
 const crypto = require("crypto");
-const EC = require("elliptic").ec;
-const ec = new EC("secp256k1");
+const elliptic_1 = require("elliptic");
+const ec = new elliptic_1.ec("secp256k1");
 function exp(blockchain) {
     class Block {
         constructor(num, previous, body, timestamp) {
@@ -14,17 +14,12 @@ function exp(blockchain) {
                 this.hash = Block.hash(this);
         }
         static hash(block, nonce, format) {
-            if (block instanceof Block) {
-                let trueNonce = nonce ? nonce : block.nonces[0];
-                let input = block.num + block.previous +
-                    block.body + block.timestamp;
-                if (trueNonce)
-                    input += trueNonce;
-                return hash(input, format);
-            }
-            else {
-                throw TypeError("Attempt to get hash of non-block");
-            }
+            let trueNonce = nonce ? nonce : block.nonces[0];
+            let input = block.num + block.previous +
+                block.body + block.timestamp;
+            if (trueNonce)
+                input += trueNonce;
+            return hash(input, format);
         }
         static generate(body) {
             let prevBlock, previous, num;
@@ -84,37 +79,34 @@ function exp(blockchain) {
                 this.amount = amount,
                 this.sig = "";
         }
-        static sign(transaction, txI, privKey, UTXOs) {
-            if (txI instanceof Number) {
-                txI = transaction.inputs[txInum];
-            }
-            const sigData = transaction.id();
-            const referencedUTXO = TxO.getUnspentByNum(txI.fromNum, UTXOs);
+        static sign(transaction, txI, privKey) {
+            const sigData = transaction.id;
+            const referencedUTXO = TxO.getUnspentByNum(txI.fromNum);
             const key = ec.keyFromPrivate(privKey, "hex");
             return key.sign(sigData).toDER();
         }
     }
     class TxO {
-        static list = [];
         constructor(addr, amount, spent) {
             this.num = TxO.list.length,
                 this.addr = addr,
                 this.amount = amount;
-            this.spent = !!spent;
+            this.spent = spent;
             TxO.list.push(this);
         }
         static getUnspentByNum(num) {
             return TxO.list.find(val => (val.num === num) && (!val.spent));
         }
         static get unspent() {
-            return TxO.filter(val => !val.spent);
+            return TxO.list.filter((val) => !val.spent);
         }
         static updateUnspent() {
         }
     }
+    TxO.list = [];
     function hash(input, format) {
         return crypto.createHash("sha256")
-            .update(input).digest(format ? format : "hex");
+            .update(input).digest((format ? format : "hex"));
     }
     return {
         Block: Block,

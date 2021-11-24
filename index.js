@@ -1,6 +1,13 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 let blockchain = [];
-const Express = require("express"), HJSON = require("hjson"), fs = require("fs"), ALPHA58 = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz", base58 = require("base-x")(ALPHA58), cleanup = require("./cleanup");
+const ALPHA58 = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
+const Express = require("express");
+const HJSON = require("hjson");
+const fs = require("fs");
+const baseX = require("base-x");
+const cleanup_1 = require("./cleanup");
+const base58 = baseX(ALPHA58);
 const { Block, Transaction, TxI, TxO, hash, } = require("./writeup.js")(blockchain);
 const configContent = fs.readFileSync("config.hjson", "utf8");
 const memoryFileContent = fs.readFileSync("nodemem.json", "utf8");
@@ -42,8 +49,8 @@ if (config.miner) {
     let routersPush = config.pushToRouters;
     let routersPull = config.pullFromRouters;
     routersPush.forEach((r) => {
-        let {} = axios.post(r, {}).catch((error) => {
-            console.error(error);
+        let {} = axios.post(r, {}).catch((e) => {
+            console.error(e);
         });
     });
     routersPull.forEach((r) => {
@@ -100,7 +107,7 @@ function runCarbon(block) {
     }
 }
 function doCleanup() {
-    cleanup(mem);
+    cleanup_1.default(mem);
 }
 let {} = process.on("exit", doCleanup);
 let {} = process.on("SIGINT", () => {
