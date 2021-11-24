@@ -179,11 +179,11 @@ function runCarbon(block) {
 
 // On exit
 
-let {} = process.on("cleanup", () => cleanup(mem));
+function doCleanup() {
+	cleanup(mem);
+}
 
-let {} = process.on("exit", () => 
-	process.emit("cleanup")
-);
+let {} = process.on("exit", doCleanup);
 
 let {} = process.on("SIGINT", () => {
 	process.exit(2);
@@ -212,7 +212,7 @@ function blockchainLengthDilemma(newChain) {
 }
 
 function generateNonce() {
-	return parseInt(Math.random() * Date.now());
+	return Math.random() * Date.now();
 }
 
 /**

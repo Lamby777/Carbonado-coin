@@ -1,13 +1,28 @@
 // Code writeup module for use in index.js
 "use strict";
 
-const crypto = require("crypto");
-const EC = require("elliptic").ec;
+import * as crypto from "crypto";
+import {ec as EC} from "elliptic";
+//const EC = require("elliptic").ec;
 const ec = new EC("secp256k1");
 
-function exp(blockchain) {
+// fix any[] to class later
+function exp(blockchain: any[]) {
 	class Block {
-		constructor(num, previous, body, timestamp) {
+		public num: number;
+		public previous: string;
+		public body: any;
+		public timestamp: number;
+		public difficultyLocale: any; ////////// fix
+		public nonces: any[];
+		public hash: string;
+
+		constructor(
+			num?: number,
+			previous?: string,
+			body?: any, // fix later
+			timestamp?: number) {
+			
 			this.num = num ? num : blockchain.length,
 			this.previous = previous, // Previous hash
 			this.body = body !== undefined ? body : null,
@@ -17,19 +32,16 @@ function exp(blockchain) {
 			this.hash = Block.hash(this);
 		}
 
-		static hash(block, nonce, format) {
-			if (block instanceof Block) {
-				let trueNonce = nonce ? nonce : block.nonces[0]; // For mining 
-				let input = block.num + block.previous +
-						block.body + block.timestamp;
-				if (trueNonce) input += trueNonce;
-				return hash(input, format);
-			} else {
-				throw TypeError("Attempt to get hash of non-block");
-			}
+		static hash(block: Block, nonce?: number, format?: string) {
+			// For mining
+			let trueNonce = nonce ? nonce : block.nonces[0];
+			let input = block.num + block.previous +
+					block.body + block.timestamp;
+			if (trueNonce) input += trueNonce;
+			return hash(input, format);
 		}
 
-		static generate(body) {
+		static generate(body: object) {
 			let prevBlock, previous, num;
 			if (blockchain.length === 0) {
 				prevBlock = null;
@@ -53,7 +65,7 @@ function exp(blockchain) {
 		}
 
 
-		static verify(block) {
+		static verify(block: Block) {
 			// Innocent until proven guilty :)
 			let valid = true;
 			let prevBlock = blockchain.filter(val => val.num === block.num-1)[0];
@@ -73,7 +85,10 @@ function exp(blockchain) {
 
 
 	class Transaction {
-		constructor(inputs, outputs) {
+		public inputs: TxI[];
+		public outputs: TxO[];
+
+		constructor(inputs: TxI[], outputs: TxO[]) {
 			this.inputs = inputs,
 			this.outputs = outputs;
 		}
@@ -92,30 +107,40 @@ function exp(blockchain) {
 
 		// Does the same thing as hash()
 		// Only added this for code maintainability
-		static hash(inputs, outputs) {
+		static hash(inputs: string, outputs: string) {
 			return hash(inputs + outputs);
 		}
 	}
 
 	class TxI {
-		constructor(fromNum, fromId, amount) {
+		public fromNum: number;
+		public fromId: string;
+		public amount: number;
+		public sig: string;
+
+		constructor(
+			fromNum?: number,
+			fromId?: string,
+			amount?: number) {
 			this.fromNum = fromNum,
 			this.fromId = fromId,
 			this.amount = amount,
 			this.sig = "";
 		}
 
-		// Honestly, I'm kinda confused what this method does,
-		// but it works and I'm happy about that.
-		// Thanks, lhartikk, I guess.
-		static sign(transaction, txI, privKey, UTXOs) {
-			if (txI instanceof Number) {
-				txI = transaction.inputs[txInum];
-			}
+		static sign(
+			transaction: Transaction,
+			txI: TxI,
+			privKey: string, ) {
+			//UTXOs: TxO[] ) {
+			
+			/*if (txI instanceof Number) {
+				txI = transaction.inputs[txI];
+			}*/
 
-			const sigData = transaction.id();
+			const sigData = transaction.id; // apparently () big bad
 			const referencedUTXO = TxO.getUnspentByNum(
-				/*txI.fromId,*/ txI.fromNum, UTXOs);
+				/*txI.fromId,*/ txI.fromNum);
 			//const referencedAddress = referencedUTXO.address;
 			const key = ec.keyFromPrivate(privKey, "hex");
 			return key.sign(sigData).toDER();
@@ -124,26 +149,33 @@ function exp(blockchain) {
 
 	class TxO {
 		// List of all TXOs, including spent
-		static list = [];
+		public static list: TxO[];
+		public num: number;
+		public addr: string;
+		public amount: number;
+		public spent: boolean;
 
-		constructor(addr, amount, spent) {
+		constructor(
+			addr: string,
+			amount: number,
+			spent: boolean) {
 			this.num = TxO.list.length,
 			this.addr = addr,
 			this.amount = amount;
-			this.spent = !!spent;
+			this.spent = spent;
 
 			// Push to UTXOs list if not spent
 			TxO.list.push(this);
 		}
 
 		// Query TXO list for unspent with matching num
-		static getUnspentByNum(num) {
+		static getUnspentByNum(num: number) {
 			return TxO.list.find(val =>
 				(val.num === num) && (!val.spent));
 		}
 
 		static get unspent() {
-			return TxO.filter(val => !val.spent);
+			return TxO.list.filter((val: any) => !val.spent);
 		}
 
 		static updateUnspent() {
@@ -152,9 +184,9 @@ function exp(blockchain) {
 		}
 	}
 
-	function hash(input, format) {
+	function hash(input: any, format?: string) {
 		return crypto.createHash("sha256")
-			.update(input).digest(format ? format : "hex");
+			.update(input).digest(<any>(format ? format : "hex"));
 	}
 
 	return {

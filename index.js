@@ -99,10 +99,10 @@ function runCarbon(block) {
         return res;
     }
 }
-let {} = process.on("cleanup", () => cleanup(mem));
-let {} = process.on("exit", () => {
-    process.emit("cleanup");
-});
+function doCleanup() {
+    cleanup(mem);
+}
+let {} = process.on("exit", doCleanup);
 let {} = process.on("SIGINT", () => {
     process.exit(2);
 });
@@ -116,7 +116,7 @@ function blockchainLengthDilemma(newChain) {
     }
 }
 function generateNonce() {
-    return parseInt(Math.random() * Date.now());
+    return Math.random() * Date.now();
 }
 function hexToBinary(hex) {
     hex = hex.replace("0x", "").toLowerCase();

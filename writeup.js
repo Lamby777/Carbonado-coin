@@ -95,6 +95,7 @@ function exp(blockchain) {
         }
     }
     class TxO {
+        static list = [];
         constructor(addr, amount, spent) {
             this.num = TxO.list.length,
                 this.addr = addr,
@@ -111,7 +112,6 @@ function exp(blockchain) {
         static updateUnspent() {
         }
     }
-    TxO.list = [];
     function hash(input, format) {
         return crypto.createHash("sha256")
             .update(input).digest(format ? format : "hex");
