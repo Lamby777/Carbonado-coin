@@ -198,4 +198,5 @@ function exp(blockchain: any[]) {
 	}
 }
 
-module.exports = exp;
+export default exp;
+//module.exports = exp;

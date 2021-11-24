@@ -1,15 +1,16 @@
 // Yet another random crypto coin
 "use strict";
 
-let blockchain = [];
+let blockchain: any[];
+const ALPHA58 = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
 
 // Imports
-const Express = require("express"),
-	HJSON = require("hjson"),
-	fs = require("fs"),
-	ALPHA58 = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz",
-	base58 = require("base-x")(ALPHA58),
-	cleanup = require("./cleanup");
+import * as Express from "express";
+import * as HJSON from "hjson";
+import * as fs from "fs";
+import * as baseX from "base-x";
+import * as cleanup from "./cleanup";
+const base58 = baseX(ALPHA58);
 
 // Import blockchain classes/functions from writeup
 const {
