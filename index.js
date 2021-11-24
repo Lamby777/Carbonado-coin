@@ -195,6 +195,11 @@ let {} = process.on("SIGINT", () => {
 
 // Functions
 
+/**
+ * Checks if blockchain given is valid
+ * @param {Array} blockchain
+ * @returns {Boolean}
+ */
 function verifyBlockchain(blockchain) {
 	return blockchain.every(n => Block.verify(n));
 }
@@ -210,9 +215,14 @@ function generateNonce() {
 	return parseInt(Math.random() * Date.now());
 }
 
-// Gonna be real with you, I took this straight from "The Stack"
+/**
+ * Gonna be real with you, I took this straight from "The Stack"
+ * @param {String} hex
+ * 
+ * @returns {String}
+ */
 function hexToBinary(hex) {
-	//hex = hex.replace("0x", "").toLowerCase();
+	hex = hex.replace("0x", "").toLowerCase();
 	var out = "";
 	for(var c of hex) {
 		switch(c) {
@@ -237,6 +247,13 @@ function hexToBinary(hex) {
 	} return out;
 }
 
+/**
+ * Merges 2 arrays while removing duplicates
+ * 
+ * @param {Array} a
+ * @param {Array} b
+ * @returns {Array}
+ */
 function combineArrays(a, b) {
 	return a.concat(b.filter((val) => !a.includes(val)));
 }
