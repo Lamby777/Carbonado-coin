@@ -9,7 +9,7 @@ import * as Express from "express";
 import * as HJSON from "hjson";
 import * as fs from "fs";
 import * as baseX from "base-x";
-import cleanup from "./cleanup";
+import cleanup = require("./cleanup");
 const base58 = baseX(ALPHA58);
 
 // Import blockchain classes/functions from writeup
@@ -25,7 +25,7 @@ const {
 const configContent = fs.readFileSync("config.hjson", "utf8");
 const memoryFileContent = fs.readFileSync("nodemem.json", "utf8");
 const config = HJSON.parse(configContent);
-let mem = {};
+let mem: any = {};
 let peers: string[] = [];
 try {
 	mem = JSON.parse(memoryFileContent);

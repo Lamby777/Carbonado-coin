@@ -6,7 +6,7 @@ const Express = require("express");
 const HJSON = require("hjson");
 const fs = require("fs");
 const baseX = require("base-x");
-const cleanup_1 = require("./cleanup");
+const cleanup = require("./cleanup");
 const base58 = baseX(ALPHA58);
 const { Block, Transaction, TxI, TxO, hash, } = require("./writeup.js")(blockchain);
 const configContent = fs.readFileSync("config.hjson", "utf8");
@@ -107,10 +107,11 @@ function runCarbon(block) {
     }
 }
 function doCleanup() {
-    cleanup_1.default(mem);
+    cleanup(mem);
 }
 let {} = process.on("exit", doCleanup);
 let {} = process.on("SIGINT", () => {
+    doCleanup();
     process.exit(2);
 });
 function verifyBlockchain(blockchain) {
