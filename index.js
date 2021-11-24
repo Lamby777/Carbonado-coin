@@ -7,6 +7,8 @@ let blockchain = [];
 const Express = require("express"),
 	HJSON = require("hjson"),
 	fs = require("fs"),
+	ALPHA58 = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz",
+	base58 = require("base-x")(ALPHA58),
 	cleanup = require("./cleanup");
 
 // Import blockchain classes/functions from writeup
@@ -238,6 +240,28 @@ function hexToBinary(hex) {
 function combineArrays(a, b) {
 	return a.concat(b.filter((val) => !a.includes(val)));
 }
+
+/**
+ * Generates a wallet address from Public Key
+ * 
+ * @param {String} key
+ * @returns {String}
+*/
+function addressFromPubkey(key) {
+	key = hash(key, "hex");
+	let addr = base58.encode(Buffer.from(key));
+}
+
+/**
+ * Reverse of addressFromPubkey();
+ * 
+ * @param {String} addr
+ * @returns {Boolean}
+ */
+function validateWalletAddress(addr) {
+	//
+}
+
 
 // More "borrowed" code from Tamás Sallai
 /*async function asyncFilter(arr, predicate) {

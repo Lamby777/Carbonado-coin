@@ -21,6 +21,7 @@
     "@types/express": "^4.17.13",
     "@types/hjson": "^2.4.3",
     "axios": "^0.24.0",
+    "base-x": "^3.0.9",
     "elliptic": "^6.5.4",
     "express": "^4.17.1",
     "hjson": "^3.2.2",
