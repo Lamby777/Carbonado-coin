@@ -1,9 +1,9 @@
 "use strict";
 const fs = require("fs");
-
-module.exports = function cleanup(mem) {
-	// This script will run before task exit.
-
-	// Write memory to JSON file for next startup
-	fs.writeFileSync("nodemem.json", JSON.stringify(mem), "utf8");
+function cleanup(mem) {
+    console.log("Bye!");
+    mem.lastExit = Date.now();
+    fs.writeFileSync("nodemem.json", JSON.stringify(mem), "utf8");
 }
+module.exports = cleanup;
+//# sourceMappingURL=cleanup.js.map

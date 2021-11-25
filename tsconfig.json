@@ -2,11 +2,14 @@
 	"compilerOptions": {
 		"module": "commonjs",
 		"removeComments": true,
+		"noImplicitAny": true,
 		"preserveConstEnums": true,
-		"target": "es6",
+		"target": "esnext",
 		"sourceMap": true
 	},
 	"files": [
-		"index.ts"
+		"index.ts",
+		"writeup.ts",
+		"cleanup.ts"
 	]
 }

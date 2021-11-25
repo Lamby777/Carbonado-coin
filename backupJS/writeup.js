@@ -5,17 +5,9 @@ const crypto = require("crypto");
 const EC = require("elliptic").ec;
 const ec = new EC("secp256k1");
 
-export function exp(blockchain): object {
+function exp(blockchain) {
 	class Block {
-		public num: number;
-		public previous: string;
-		public body: any;
-		public timestamp: number;
-		public difficultyLocale: number;
-		public nonces: number[];
-		public hash: string;
-
-		constructor(num, previous, body, timestamp, hash) {
+		constructor(num, previous, body, timestamp) {
 			this.num = num ? num : blockchain.length,
 			this.previous = previous, // Previous hash
 			this.body = body !== undefined ? body : null,
@@ -25,7 +17,7 @@ export function exp(blockchain): object {
 			this.hash = Block.hash(this);
 		}
 
-		static hash(block, nonce?: number, format?: string) {
+		static hash(block, nonce, format) {
 			if (block instanceof Block) {
 				let trueNonce = nonce ? nonce : block.nonces[0]; // For mining 
 				let input = block.num + block.previous +
@@ -81,19 +73,18 @@ export function exp(blockchain): object {
 
 
 	class Transaction {
-		constructor(id, inputs, outputs) {
-			this.id = id,
+		constructor(inputs, outputs) {
 			this.inputs = inputs,
 			this.outputs = outputs;
 		}
 
 		get id() {
 			let inputData = this.inputs
-				.map((txI) => txI.to)
+				.map((txI) => txI.fromNum + txI.fromId + txI.amount)
 				.reduce((a, b) => a + b, "");
 
 			let outputData = this.outputs
-				.map((txO) => txO.addr + txO.amount)
+				.map((txO) => txO.num + txO.addr + txO.amount)
 				.reduce((a, b) => a + b, "");
 			
 			return Transaction.hash(inputData, outputData);
@@ -107,22 +98,57 @@ export function exp(blockchain): object {
 	}
 
 	class TxI {
-		constructor(to, sig) {
-			this.to = to,
-			this.sig = sig;
+		constructor(fromNum, fromId, amount) {
+			this.fromNum = fromNum,
+			this.fromId = fromId,
+			this.amount = amount,
+			this.sig = "";
+		}
+
+		// Honestly, I'm kinda confused what this method does,
+		// but it works and I'm happy about that.
+		// Thanks, lhartikk, I guess.
+		static sign(transaction, txI, privKey, UTXOs) {
+			if (txI instanceof Number) {
+				txI = transaction.inputs[txInum];
+			}
+
+			const sigData = transaction.id();
+			const referencedUTXO = TxO.getUnspentByNum(
+				/*txI.fromId,*/ txI.fromNum, UTXOs);
+			//const referencedAddress = referencedUTXO.address;
+			const key = ec.keyFromPrivate(privKey, "hex");
+			return key.sign(sigData).toDER();
 		}
 	}
 
 	class TxO {
-		constructor(addr, amount) {
+		// List of all TXOs, including spent
+		static list = [];
+
+		constructor(addr, amount, spent) {
+			this.num = TxO.list.length,
 			this.addr = addr,
 			this.amount = amount;
-		}
-	}
+			this.spent = !!spent;
 
-	class UTxO {
-		constructor() {
-			//
+			// Push to UTXOs list if not spent
+			TxO.list.push(this);
+		}
+
+		// Query TXO list for unspent with matching num
+		static getUnspentByNum(num) {
+			return TxO.list.find(val =>
+				(val.num === num) && (!val.spent));
+		}
+
+		static get unspent() {
+			return TxO.filter(val => !val.spent);
+		}
+
+		static updateUnspent() {
+			// Check blockchain for new in/outs and
+			// update spent status of old UTXOs
 		}
 	}
 
@@ -136,7 +162,8 @@ export function exp(blockchain): object {
 		Transaction: Transaction,
 		TxI: TxI,
 		TxO: TxO,
-		UTxO: UTxO,
 		hash: hash,
 	}
 }
+
+module.exports = exp;
