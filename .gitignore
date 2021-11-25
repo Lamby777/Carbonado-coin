@@ -1,2 +1,4 @@
 .breakpoints
-nodemem.json
+index.js
+cleanup.js
+writeup.js
