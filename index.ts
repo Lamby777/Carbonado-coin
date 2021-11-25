@@ -149,7 +149,7 @@ function runCarbon(block: InstanceType<typeof Block>) {
 	
 	// Update difficulty
 	let difficulty = 3; // Set low because Replit doesn't like mining
-	let difficultyString = "0".repeat(difficulty); // Hash must begin with this
+	let difficultyString = "0".repeat(difficulty); // Hash begins with this
 
 	// Start hashing
 	do {
@@ -201,18 +201,18 @@ let {} = process.on("SIGINT", () => {
  * @param {Array} blockchain
  * @returns {Boolean}
  */
-function verifyBlockchain(blockchain: any[]) {
+function verifyBlockchain(blockchain: any[]): boolean {
 	return blockchain.every(n => Block.verify(n));
 }
 
-function blockchainLengthDilemma(newChain: any[]) {
+function blockchainLengthDilemma(newChain: any[]): void {
 	if (newChain.length > blockchain.length &&	// New chain longer
 		verifyBlockchain(newChain)) {			// New chain valid
 		blockchain = newChain;
 	}
 }
 
-function generateNonce() {
+function generateNonce(): number {
 	return Math.random() * Date.now();
 }
 
@@ -222,7 +222,7 @@ function generateNonce() {
  * 
  * @returns {String}
  */
-function hexToBinary(hex: string) {
+function hexToBinary(hex: string): string {
 	hex = hex.replace("0x", "").toLowerCase();
 	var out = "";
 	for(var c of hex) {
@@ -249,19 +249,21 @@ function hexToBinary(hex: string) {
 }
 
 // Merges 2 arrays while removing duplicates
-function combineArrays(a: any[], b: any[]) {
+function combineArrays(a: any[], b: any[]): any[] {
 	return a.concat(b.filter((val) => !a.includes(val)));
 }
 
 // Generates a wallet address from Public Key
-function addressFromPubkey(key: string) {
+function addressFromPubkey(key: string): string {
 	key = hash(key, "hex");
 	let addr = base58.encode(Buffer.from(key));
+	return key;
 }
 
 // Reverse of addressFromPubkey();
-function validateWalletAddress(addr: string) {
+function validateWalletAddress(addr: string): boolean {
 	//
+	return true; // typescript moment :/
 }
 
 

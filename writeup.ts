@@ -6,8 +6,10 @@ import {ec as EC} from "elliptic";
 //const EC = require("elliptic").ec;
 const ec = new EC("secp256k1");
 
+const keypair = "test";
+
 // fix any[] to class later
-function exp(blockchain: any[]) {
+function exp(blockchain: any[]): object {
 	class Block {
 		public num: number;
 		public previous: string;
@@ -32,7 +34,10 @@ function exp(blockchain: any[]) {
 			this.hash = Block.hash(this);
 		}
 
-		static hash(block: Block, nonce?: number, format?: string) {
+		static hash(
+			block: Block,
+			nonce?: number,
+			format?: string): string {
 			// For mining
 			let trueNonce = nonce ? nonce : block.nonces[0];
 			let input = block.num + block.previous +
@@ -41,7 +46,7 @@ function exp(blockchain: any[]) {
 			return hash(input, format);
 		}
 
-		static generate(body: object) {
+		static generate(body: object): Block {
 			let prevBlock, previous, num;
 			if (blockchain.length === 0) {
 				prevBlock = null;
@@ -65,7 +70,7 @@ function exp(blockchain: any[]) {
 		}
 
 
-		static verify(block: Block) {
+		static verify(block: Block): boolean {
 			// Innocent until proven guilty :)
 			let valid = true;
 			let prevBlock = blockchain.filter(val => val.num === block.num-1)[0];
@@ -93,7 +98,7 @@ function exp(blockchain: any[]) {
 			this.outputs = outputs;
 		}
 
-		get id() {
+		get id(): string {
 			let inputData = this.inputs
 				.map((txI) => txI.fromNum + txI.fromId + txI.amount)
 				.reduce((a, b) => a + b, "");
@@ -107,7 +112,7 @@ function exp(blockchain: any[]) {
 
 		// Does the same thing as hash()
 		// Only added this for code maintainability
-		static hash(inputs: string, outputs: string) {
+		static hash(inputs: string, outputs: string): string {
 			return hash(inputs + outputs);
 		}
 	}
@@ -131,7 +136,7 @@ function exp(blockchain: any[]) {
 		static sign(
 			transaction: Transaction,
 			txI: TxI,
-			privKey: string, ) {
+			privKey: string): number[] {
 			//UTXOs: TxO[] ) {
 			
 			/*if (txI instanceof Number) {
@@ -184,7 +189,7 @@ function exp(blockchain: any[]) {
 		}
 	}
 
-	function hash(input: any, format?: string) {
+	function hash(input: any, format?: string): string {
 		return crypto.createHash("sha256")
 			.update(input).digest(<any>(format ? format : "hex"));
 	}

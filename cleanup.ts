@@ -1,7 +1,7 @@
 "use strict";
 import * as fs from "fs";
 
-function cleanup(mem: any) {
+function cleanup(mem: any): void {
 	// This script will run before task exit.
 	console.log("Bye!");
 

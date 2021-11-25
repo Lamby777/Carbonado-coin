@@ -111,7 +111,6 @@ function doCleanup() {
 }
 let {} = process.on("exit", doCleanup);
 let {} = process.on("SIGINT", () => {
-    doCleanup();
     process.exit(2);
 });
 function verifyBlockchain(blockchain) {
@@ -190,7 +189,9 @@ function combineArrays(a, b) {
 function addressFromPubkey(key) {
     key = hash(key, "hex");
     let addr = base58.encode(Buffer.from(key));
+    return key;
 }
 function validateWalletAddress(addr) {
+    return true;
 }
 //# sourceMappingURL=index.js.map

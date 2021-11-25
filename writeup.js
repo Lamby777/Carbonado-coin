@@ -2,6 +2,7 @@
 const crypto = require("crypto");
 const elliptic_1 = require("elliptic");
 const ec = new elliptic_1.ec("secp256k1");
+const keypair = "test";
 function exp(blockchain) {
     class Block {
         constructor(num, previous, body, timestamp) {
