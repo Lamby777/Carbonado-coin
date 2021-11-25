@@ -5,7 +5,7 @@
 		"noImplicitAny": true,
 		"preserveConstEnums": true,
 		"target": "esnext",
-		"sourceMap": true
+		"sourceMap": false
 	},
 	"files": [
 		"index.ts",

@@ -194,4 +194,3 @@ function addressFromPubkey(key) {
 function validateWalletAddress(addr) {
     return true;
 }
-//# sourceMappingURL=index.js.map

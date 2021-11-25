@@ -6,4 +6,3 @@ function cleanup(mem) {
     fs.writeFileSync("nodemem.json", JSON.stringify(mem), "utf8");
 }
 module.exports = cleanup;
-//# sourceMappingURL=cleanup.js.map

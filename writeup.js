@@ -5,6 +5,13 @@ const ec = new elliptic_1.ec("secp256k1");
 const keypair = "test";
 function exp(blockchain) {
     class Block {
+        num;
+        previous;
+        body;
+        timestamp;
+        difficultyLocale;
+        nonces;
+        hash;
         constructor(num, previous, body, timestamp) {
             this.num = num ? num : blockchain.length,
                 this.previous = previous,
@@ -56,6 +63,8 @@ function exp(blockchain) {
         }
     }
     class Transaction {
+        inputs;
+        outputs;
         constructor(inputs, outputs) {
             this.inputs = inputs,
                 this.outputs = outputs;
@@ -74,6 +83,10 @@ function exp(blockchain) {
         }
     }
     class TxI {
+        fromNum;
+        fromId;
+        amount;
+        sig;
         constructor(fromNum, fromId, amount) {
             this.fromNum = fromNum,
                 this.fromId = fromId,
@@ -88,6 +101,11 @@ function exp(blockchain) {
         }
     }
     class TxO {
+        static list = [];
+        num;
+        addr;
+        amount;
+        spent;
         constructor(addr, amount, spent) {
             this.num = TxO.list.length,
                 this.addr = addr,
@@ -104,7 +122,6 @@ function exp(blockchain) {
         static updateUnspent() {
         }
     }
-    TxO.list = [];
     function hash(input, format) {
         return crypto.createHash("sha256")
             .update(input).digest((format ? format : "hex"));
@@ -118,4 +135,3 @@ function exp(blockchain) {
     };
 }
 module.exports = exp;
-//# sourceMappingURL=writeup.js.map
