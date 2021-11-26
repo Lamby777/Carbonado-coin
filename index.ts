@@ -1,15 +1,24 @@
 // Yet another random crypto coin
 "use strict";
-if (process.env.MODE === "test") console.log = ((): void => {});
 
+// Check execution method
+console.log(process.env.MODE);
+if (!process.env.MODE) process.env.MODE = "main";
+const testing = process.env.MODE === "test";
+
+// Override console.log if running unit test
+if (testing) console.log = ((): void => {});
+
+
+// Init pre-import variables
 let blockchain: any[] = [];
 const ALPHA58 = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
 
 // Imports
-import * as Express from "express";
-import * as HJSON from "hjson";
-import * as fs from "fs";
-import * as baseX from "base-x";
+import * as Express	from "express";
+import * as HJSON	from "hjson";
+import * as fs		from "fs";
+import * as baseX	from "base-x";
 import cleanup = require("./cleanup");
 const base58 = baseX(ALPHA58);
 
@@ -35,32 +44,22 @@ try {
 }
 
 
-// Hard Constants
+// Hard Constants and Default Values
 const PORT = 11870;
 const MINER_REWARD = 1;
 let c = 50;
 
-// Code Constants
+// Start Express server for peers to use
 const app = Express();
 app.use(Express.json());
 
-let tx = new Transaction(
-	[
-		new TxI(0, "id of txo", 2),
-	], [
-		new TxO("public key", 2, false),
-	],
-);
 
+// Add genesis to blockchain
 const genesis = new Block(0, "", {
-	content: [
-//		new TxO(addr, amount, spent),
-//		new TxI(fromNum, txId, amount, sig),
-	],
+	content: [],
 }, 1636962514638);
 
 blockchain.push(genesis);
-
 console.log(blockchain);
 
 
@@ -116,7 +115,6 @@ if (config.miner) {
 
 			peers = combineArrays(peers, ominers);
 			//peers = peers.concat(ominers);
-			console.log(peers);
 		}).catch((e: Error) => {console.error(e)}).finally(() => {
 			//setTimeout(_ => console.log(peers), 3000);
 		});
@@ -144,21 +142,26 @@ let {} = app.listen(PORT, () => {
 
 // Main mining algorithm
 function runCarbon(block: InstanceType<typeof Block>) {
-	let res,
+	let res, difficulty,
 		solved = false,
 		nonce = generateNonce();
 	
 	// Update difficulty
-	let difficulty = 3; // Set low because Replit doesn't like mining
-	let difficultyString = "0".repeat(difficulty); // Hash begins with this
-
+	if (testing) {
+		difficulty = 3; // Set low because Replit doesn't like mining
+	} else {
+		difficulty = 3;
+	}
+	
+	
 	// Start hashing
+	const correctPrefix = "0".repeat(difficulty);
 	do {
 		res = Block.hash(block, nonce, "hex");
 
 		// Check if hash passes repeating 0s checksum
 		if (hexToBinary(res)
-			.startsWith(difficultyString)) solved = true;
+			.startsWith(correctPrefix)) solved = true;
 
 		// Check if someone else solved
 		if (false) {
@@ -179,8 +182,8 @@ function runCarbon(block: InstanceType<typeof Block>) {
 }
 
 
-// On exit
 
+// On exit
 function doCleanup() {
 	cleanup(mem);
 }

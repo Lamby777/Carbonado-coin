@@ -1,8 +1,8 @@
 // Code writeup module for use in index.js
 "use strict";
 
-import * as crypto from "crypto";
-import {ec as EC} from "elliptic";
+import * as crypto	from "crypto";
+import {ec as EC}	from "elliptic";
 //const EC = require("elliptic").ec;
 const ec = new EC("secp256k1");
 

@@ -1,16 +1,16 @@
+// Script that runs for graceful exit
 "use strict";
 import * as fs from "fs";
+const testing = process.env.MODE === "test";
 
+// Runs on sigterm / exit
 function cleanup(mem: any): void {
-	// This script will run before task exit.
-	console.log("Bye!");
-
 	// Write exit time to memory
 	mem.lastExit = Date.now();
 
 	// Write memory to JSON file for next startup
-	fs.writeFileSync("nodemem.json", JSON.stringify(mem), "utf8");
+	if (!testing) // Don't save mem for unit tests
+		fs.writeFileSync("nodemem.json", JSON.stringify(mem), "utf8");
 }
 
-//module.exports = cleanup;
 export = cleanup;
