@@ -2,9 +2,9 @@
 "use strict";
 
 // Check execution method
-console.log(process.env.MODE);
 if (!process.env.MODE) process.env.MODE = "main";
 const testing = process.env.MODE === "test";
+console.log(`Running in environment "${process.env.MODE}"`);
 
 // Override console.log if running unit test
 if (testing) console.log = ((): void => {});
@@ -32,13 +32,12 @@ const {
 
 
 // Read files
-const configContent = fs.readFileSync("config.hjson", "utf8");
-const memoryFileContent = fs.readFileSync("nodemem.json", "utf8");
-const config = HJSON.parse(configContent);
-let mem: any = {};
+const configContent: string = fs.readFileSync("config.hjson", "utf8");
+const config: Record<string, any> = HJSON.parse(configContent);
+let mem: Record<string, any> = {};
 let peers: string[] = [];
 try {
-	mem = JSON.parse(memoryFileContent);
+	mem = JSON.parse(fs.readFileSync("nodemem.json", "utf8"));
 } catch(e) {
 	fs.writeFileSync("./nodemem.json", JSON.stringify(mem), "utf8");
 }
@@ -47,7 +46,7 @@ try {
 // Hard Constants and Default Values
 const PORT = 11870;
 const MINER_REWARD = 1;
-let c = 50;
+let c = 70;
 
 // Start Express server for peers to use
 const app = Express();
@@ -60,7 +59,7 @@ const genesis = new Block(0, "", {
 }, 1636962514638);
 
 blockchain.push(genesis);
-console.log(blockchain);
+//console.log(blockchain);
 
 
 
