@@ -7,9 +7,12 @@
 		"target": "esnext",
 		"sourceMap": false
 	},
-	"files": [
-		"index.ts",
-		"writeup.ts",
-		"cleanup.ts"
+	"exclude": [
+		"node_modules"
 	]
+	//"files": [
+	//	"index.ts",
+	//	"writeup.ts",
+	//	"cleanup.ts"
+	//]
 }

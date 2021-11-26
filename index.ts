@@ -1,5 +1,6 @@
 // Yet another random crypto coin
 "use strict";
+if (process.env.MODE === "test") console.log = ((): void => {});
 
 let blockchain: any[] = [];
 const ALPHA58 = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
@@ -196,11 +197,7 @@ let {} = process.on("SIGINT", () => {
 
 // Functions
 
-/**
- * Checks if blockchain given is valid
- * @param {Array} blockchain
- * @returns {Boolean}
- */
+// Checks if blockchain given is valid
 function verifyBlockchain(blockchain: any[]): boolean {
 	return blockchain.every(n => Block.verify(n));
 }
@@ -216,12 +213,7 @@ function generateNonce(): number {
 	return Math.random() * Date.now();
 }
 
-/**
- * Gonna be real with you, I took this straight from "The Stack"
- * @param {String} hex
- * 
- * @returns {String}
- */
+// Gonna be real with you, I took this straight from "The Stack"
 function hexToBinary(hex: string): string {
 	hex = hex.replace("0x", "").toLowerCase();
 	var out = "";
@@ -266,9 +258,27 @@ function validateWalletAddress(addr: string): boolean {
 	return true; // typescript moment :/
 }
 
-
 // More "borrowed" code from Tamás Sallai
 /*async function asyncFilter(arr, predicate) {
     const results = await Promise.all(arr.map(predicate));
     return arr.filter((_, index) => results[index]);
 }*/
+
+export {
+	PORT,
+	MINER_REWARD,
+	c,
+	blockchain,
+	Block, Transaction, TxI, TxO,
+	hash,
+	mem,
+	peers,
+	config,
+	runCarbon,
+	verifyBlockchain,
+	blockchainLengthDilemma,
+	generateNonce,
+	hexToBinary,
+	addressFromPubkey,
+	validateWalletAddress,
+}

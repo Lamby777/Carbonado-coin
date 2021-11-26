@@ -1,5 +1,4 @@
 .breakpoints
-index.js
-cleanup.js
-writeup.js
+*.js
+!_*.js
 node16
