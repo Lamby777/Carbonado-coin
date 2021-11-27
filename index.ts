@@ -6,10 +6,6 @@ if (!process.env.MODE) process.env.MODE = "main";
 const testing = process.env.MODE === "test";
 console.log(`Running in environment "${process.env.MODE}"`);
 
-// Override console.log if running unit test
-if (testing) console.log = ((): void => {});
-
-
 // Init pre-import variables
 let blockchain: any[] = [];
 const ALPHA58 = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
@@ -59,7 +55,7 @@ const genesis = new Block(0, "", {
 }, 1636962514638);
 
 blockchain.push(genesis);
-//console.log(blockchain);
+//regLog(blockchain);
 
 
 
@@ -70,7 +66,7 @@ let {} = app.get("/", (req, res) => {
 
 // Respond to "alive" checks in peer discovery
 let {} = app.get("/ping", (req, res) => {
-	console.log("yo");
+	regLog("yo");
 	res.json({
 		miner: config.miner,
 	});
@@ -102,7 +98,7 @@ if (config.miner) {
 				// Run for each peer in router
 				let val: boolean = null;
 				axios.get("http://" + peer + "/ping").then((res: any) => {
-					console.log("Active Peer " + peer);
+					regLog("Active Peer " + peer);
 					val = true;
 				}).catch((e: Error) => {
 					console.error(e.message);
@@ -115,7 +111,7 @@ if (config.miner) {
 			peers = combineArrays(peers, ominers);
 			//peers = peers.concat(ominers);
 		}).catch((e: Error) => {console.error(e)}).finally(() => {
-			//setTimeout(_ => console.log(peers), 3000);
+			//setTimeout(_ => regLog(peers), 3000);
 		});
 	});
 
@@ -129,7 +125,7 @@ if (config.miner) {
 };
 
 let {} = app.listen(PORT, () => {
-	console.log("Carbonado listening on port " + PORT);
+	regLog("Carbonado listening on port " + PORT);
 
 	if (config.miner) {
 		// Begin mining
@@ -258,6 +254,10 @@ function addressFromPubkey(key: string): string {
 function validateWalletAddress(addr: string): boolean {
 	//
 	return true; // typescript moment :/
+}
+
+function regLog(...val: any[]): void {
+	if (!testing) console.log(...val);
 }
 
 // More "borrowed" code from Tamás Sallai
