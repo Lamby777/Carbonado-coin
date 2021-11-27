@@ -4,7 +4,7 @@
 // Check execution method
 if (!process.env.MODE) process.env.MODE = "main";
 const testing = process.env.MODE === "test";
-console.log(`Running in environment "${process.env.MODE}"`);
+regLog(`Running in environment "${process.env.MODE}"`);
 
 // Init pre-import variables
 let blockchain: any[] = [];
@@ -29,9 +29,17 @@ const {
 
 // Read files
 const configContent: string = fs.readFileSync("config.hjson", "utf8");
-const config: Record<string, any> = HJSON.parse(configContent);
+let config: Record<string, any> = HJSON.parse(configContent);
 let mem: Record<string, any> = {};
 let peers: string[] = [];
+
+// Override cetrain config values if testing
+if (testing) config = {
+	...config,
+	miner: false,
+}
+
+// Parse memory file if exists
 try {
 	mem = JSON.parse(fs.readFileSync("nodemem.json", "utf8"));
 } catch(e) {
