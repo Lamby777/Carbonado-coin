@@ -14,8 +14,7 @@ const writeup = require("../writeup")(main.blockchain);
  */
 
 test.serial("Express Server Listening", async (test) => {
-	let req = await request(main.app).get("/");
-	test.is(req.status, 200);
-
-	return test.pass();
+	let req = request(main.app);
+	test.is((await req.get("/")).status, 2100);
+	test.is((await req.get("/ping")).status, 200);
 });
