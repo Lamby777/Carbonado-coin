@@ -10,7 +10,7 @@ import * as main from "../index";
 const writeup = require("../writeup")(main.blockchain);
 
 /**
- * Checks if Express is listening on port 11870
+ * Checks if Express is listening for connections
  */
 
 test.serial("Express Server Listening", async (test) => {

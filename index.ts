@@ -15,6 +15,7 @@ import Express		from "express";
 import * as HJSON	from "hjson";
 import * as fs		from "fs";
 import baseX		from "base-x";
+import axios		from "axios";
 import cleanup = require("./cleanup");
 const base58 = baseX(ALPHA58);
 
@@ -43,7 +44,7 @@ if (testing) config = {
 try {
 	mem = JSON.parse(fs.readFileSync("nodemem.json", "utf8"));
 } catch(e) {
-	fs.writeFileSync("./nodemem.json", JSON.stringify(mem), "utf8");
+	fs.writeFileSync("nodemem.json", JSON.stringify(mem), "utf8");
 }
 
 
@@ -63,13 +64,15 @@ const genesis = new Block(0, "", {
 }, 1636962514638);
 
 blockchain.push(genesis);
-//regLog(blockchain);
 
 
 
 // Reply with blockchain if requested
 let {} = app.get("/", (req: any, res: any) => {
-	res.json(blockchain);
+	res.json({
+		blockchain: blockchain,
+		timestamp: Date.now()
+	});
 });
 
 // Respond to "alive" checks in peer discovery
@@ -81,7 +84,6 @@ let {} = app.get("/ping", (req: any, res: any) => {
 });
 
 if (config.miner) {
-	const axios = require("axios").default;
 	let routersPush = config.pushToRouters;
 	let routersPull = config.pullFromRouters;
 
@@ -126,7 +128,9 @@ if (config.miner) {
 	// Blockchain receive algorithm
 	let {} = app.post("/newBlock", (req: any, res: any) => {
 		if (true /* change to flag later*/) {
-			// Add new block to blockchain
+			// Validate block
+			//
+			// Then add new block to local blockchain
 			Block.generate();
 		}
 	});
@@ -260,20 +264,15 @@ function addressFromPubkey(key: string): string {
 
 // Reverse of addressFromPubkey();
 function validateWalletAddress(addr: string): boolean {
-	//
 	return true; // typescript moment :/
 }
 
+// To prevent spam, this one will not log if testing
 function regLog(...val: any[]): void {
 	if (!testing) console.log(...val);
 }
 
-// More "borrowed" code from Tamás Sallai
-/*async function asyncFilter(arr, predicate) {
-    const results = await Promise.all(arr.map(predicate));
-    return arr.filter((_, index) => results[index]);
-}*/
-
+// Export for AVA unit testing
 export {
 	PORT,
 	MINER_REWARD,
