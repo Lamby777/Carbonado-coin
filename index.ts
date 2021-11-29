@@ -11,10 +11,10 @@ let blockchain: any[] = [];
 const ALPHA58 = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
 
 // Imports
-import * as Express	from "express";
+import Express		from "express";
 import * as HJSON	from "hjson";
 import * as fs		from "fs";
-import * as baseX	from "base-x";
+import baseX		from "base-x";
 import cleanup = require("./cleanup");
 const base58 = baseX(ALPHA58);
 
@@ -68,12 +68,12 @@ blockchain.push(genesis);
 
 
 // Reply with blockchain if requested
-let {} = app.get("/", (req, res) => {
+let {} = app.get("/", (req: any, res: any) => {
 	res.json(blockchain);
 });
 
 // Respond to "alive" checks in peer discovery
-let {} = app.get("/ping", (req, res) => {
+let {} = app.get("/ping", (req: any, res: any) => {
 	regLog("yo");
 	res.json({
 		miner: config.miner,
@@ -124,7 +124,7 @@ if (config.miner) {
 	});
 
 	// Blockchain receive algorithm
-	let {} = app.post("/newBlock", (req, res) => {
+	let {} = app.post("/newBlock", (req: any, res: any) => {
 		if (true /* change to flag later*/) {
 			// Add new block to blockchain
 			Block.generate();
@@ -280,6 +280,7 @@ export {
 	c,
 	blockchain,
 	Block, Transaction, TxI, TxO,
+	app,
 	hash,
 	mem,
 	peers,

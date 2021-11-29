@@ -5,7 +5,8 @@
 		"noImplicitAny": true,
 		"preserveConstEnums": true,
 		"target": "esnext",
-		"sourceMap": false
+		"sourceMap": false,
+		"esModuleInterop": true
 	},
 	"exclude": [
 		"node_modules"

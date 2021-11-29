@@ -1,2 +1,2 @@
 # Runs AVA tests
-npx ava
+npx ava --serial
