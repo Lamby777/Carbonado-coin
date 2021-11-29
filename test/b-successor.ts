@@ -21,11 +21,6 @@ test.serial("Blockchain Hash Succession", async (test) => {
 		"transactions": ["hey"],
 	});
 
-	if (b2.previous === b1.hash) {
-		if (main.verifyBlockchain(main.blockchain)) {
-			return test.pass();
-		}
-	}
-
-	return test.fail();
+	test.true(b2.previous === b1.hash);
+	test.true(main.verifyBlockchain(main.blockchain));
 });
