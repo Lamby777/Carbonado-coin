@@ -13,9 +13,9 @@ const writeup = require("../writeup")(main.blockchain);
  * Checks if Express is listening for connections
  */
 
-test.serial("Express Server Listening", async () => {
+test.serial("Express Server Listening", async (t) => {
 	// Wipe blockchain
-	blockchain = [genesis];
+	main.blockchain = [main.genesis];
 
 	writeup.Block.generate();
 
@@ -23,6 +23,6 @@ test.serial("Express Server Listening", async () => {
 	
 	// POST request new valid block
 	let req = await request(main.app).post("/newBlock")
-	test.is(req.status, 200);
-	test.is(main.blockchain.length, 2)
+	t.is(req.status, 200);
+	t.is(main.blockchain.length, 2)
 });

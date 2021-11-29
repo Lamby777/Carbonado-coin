@@ -4,19 +4,19 @@
 process.env.MODE = "test";
 
 // Imports
-import test from "ava";
-import main from "../index";
+import test	from "ava";
+import main	from "../index";
 const writeup = require("../writeup")(main.blockchain);
 
 /**
  * Checks if the blockchain length works correctly.
  */
 
-test.serial("Blockchain Lengths", async (test) => {
+test.serial("Blockchain Lengths", async (t) => {
 	writeup.Block.generate({});
 	writeup.Block.generate({});
 	writeup.Block.generate({});
 	writeup.Block.generate({});
 	// 4 blocks + 1 genesis = 5 blocks in chain
-	test.is(main.blockchain.length, 5);
+	t.is(main.blockchain.length, 5);
 });

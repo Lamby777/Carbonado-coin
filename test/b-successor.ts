@@ -4,15 +4,15 @@
 process.env.MODE = "test";
 
 // Imports
-import test from "ava";
-import main from "../index";
+import test	from "ava";
+import main	from "../index";
 const writeup = require("../writeup")(main.blockchain);
 
 /**
  * Checks if a block's hash is stored in its successor.
  */
 
-test.serial("Blockchain Hash Succession", async (test) => {
+test.serial("Blockchain Hash Succession", async (t) => {
 	let b1 = writeup.Block.generate({
 		"transactions": ["yo"],
 	});
@@ -21,6 +21,6 @@ test.serial("Blockchain Hash Succession", async (test) => {
 		"transactions": ["hey"],
 	});
 
-	test.is(b2.previous, b1.hash);
-	test.true(main.verifyBlockchain(main.blockchain));
+	t.is(b2.previous, b1.hash);
+	t.true(main.verifyBlockchain(main.blockchain));
 });
