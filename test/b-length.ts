@@ -12,12 +12,11 @@ const writeup = require("../writeup")(main.blockchain);
  * Checks if the blockchain length works correctly.
  */
 
-test("Blockchain Lengths", (test) => {
+test.serial("Blockchain Lengths", async (test) => {
 	writeup.Block.generate({});
 	writeup.Block.generate({});
 	writeup.Block.generate({});
 	writeup.Block.generate({});
-	// Include genesis
-	console.log("BLOCKCHAIN LENGTH: " + main.blockchain.length)
+	// 4 blocks + 1 genesis = 5 blocks in chain
 	test.assert(main.blockchain.length === 5);
 });

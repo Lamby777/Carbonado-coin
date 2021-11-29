@@ -12,7 +12,7 @@ const writeup = require("../writeup")(main.blockchain);
  * Checks if a block's hash is stored in its successor.
  */
 
-test("Blockchain Hash Succession", (test) => {
+test.serial("Blockchain Hash Succession", async (test) => {
 	let b1 = writeup.Block.generate({
 		"transactions": ["yo"],
 	});
