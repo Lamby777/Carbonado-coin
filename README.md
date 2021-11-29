@@ -13,4 +13,6 @@ Make sure you have TypeScript and all the other dependencies installed.
 (run `npm i` in the project directory)
 
 When you're ready to transpile the TypeScript code into JS, run `npx tsc`
-in the project directory. Then, run `node index.js` to begin.
+in the project directory. Then, run `node index.js` to begin. If you're
+writing TypeScript code, make sure to keep `npx tsc --watch` open in a
+terminal to run the incremental transpiler for near instant transpilation.
