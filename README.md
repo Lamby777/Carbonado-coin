@@ -1,6 +1,9 @@
 # Carbonado JS
 This is the official implementation of Carbonado in NodeJS
 
+<p align="center"><img src="https://carbonado-site.dexiethesheep.repl.co/CarbonadoLogo.png"
+	width="42" height="42"></p>
+
 ## Configurations
 The `config.hjson` file contains config data for end users. If you don't
 want to mine, and just want to serve as a "transmission" node in the
