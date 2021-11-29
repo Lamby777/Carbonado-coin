@@ -46,7 +46,8 @@ function exp(blockchain: any[]): object {
 			return hash(input, format);
 		}
 
-		static generate(body: object): Block {
+		static generate(body: object,
+						chain: () => any[] = () => blockchain): Block {
 			let prevBlock, previous, num;
 			if (blockchain.length === 0) {
 				prevBlock = null;
@@ -65,7 +66,7 @@ function exp(blockchain: any[]): object {
 			}
 
 			let block = new Block(num, previous, body);
-			blockchain.push(block);
+			chain().push(block);
 			return block;
 		}
 

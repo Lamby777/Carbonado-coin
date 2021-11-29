@@ -5,7 +5,7 @@ process.env.MODE = "test";
 
 // Imports
 import test from "ava";
-import * as main from "../index";
+import main from "../index";
 const writeup = require("../writeup")(main.blockchain);
 
 /**
@@ -18,5 +18,5 @@ test.serial("Blockchain Lengths", async (test) => {
 	writeup.Block.generate({});
 	writeup.Block.generate({});
 	// 4 blocks + 1 genesis = 5 blocks in chain
-	test.assert(main.blockchain.length === 5);
+	test.is(main.blockchain.length, 5);
 });

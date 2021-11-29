@@ -6,7 +6,7 @@ process.env.MODE = "test";
 // Imports
 import test from "ava";
 import request from "supertest";
-import * as main from "../index";
+import main from "../index";
 const writeup = require("../writeup")(main.blockchain);
 
 /**

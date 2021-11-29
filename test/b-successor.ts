@@ -5,7 +5,7 @@ process.env.MODE = "test";
 
 // Imports
 import test from "ava";
-import * as main from "../index";
+import main from "../index";
 const writeup = require("../writeup")(main.blockchain);
 
 /**
@@ -21,6 +21,6 @@ test.serial("Blockchain Hash Succession", async (test) => {
 		"transactions": ["hey"],
 	});
 
-	test.true(b2.previous === b1.hash);
+	test.is(b2.previous, b1.hash);
 	test.true(main.verifyBlockchain(main.blockchain));
 });

@@ -26,6 +26,7 @@ const {
 	TxI, TxO,
 	hash,
 } = require("./writeup.js")(blockchain);
+type BlockType = InstanceType<typeof Block>;
 
 
 // Read files
@@ -59,7 +60,7 @@ app.use(Express.json());
 
 
 // Add genesis to blockchain
-const genesis = new Block(0, "", {
+const genesis: BlockType = new Block(0, "", {
 	content: [],
 }, 1636962514638);
 
@@ -91,10 +92,7 @@ if (config.miner) {
 
 	// Put own IP on router lists
 	routersPush.forEach((r: string) => {
-		let {} = axios.post(r, {}
-		).catch((e: Error) => {
-			console.error(e);
-		});
+		let {} = axios.post(r, {}).catch((e: Error) => console.error(e));
 	});
 
 	// Take IPs from router lists
@@ -129,7 +127,8 @@ if (config.miner) {
 	let {} = app.post("/newBlock", (req: any, res: any) => {
 		if (true /* change to flag later*/) {
 			// Validate block
-			//
+			let block: BlockType = req.body.blockData;
+
 			// Then add new block to local blockchain
 			Block.generate();
 		}
@@ -148,7 +147,7 @@ let {} = app.listen(PORT, () => {
 
 
 // Main mining algorithm
-function runCarbon(block: InstanceType<typeof Block>) {
+function runCarbon(block: BlockType) {
 	let res, difficulty,
 		solved = false,
 		nonce = generateNonce();
@@ -272,12 +271,16 @@ function regLog(...val: any[]): void {
 	if (!testing) console.log(...val);
 }
 
+function wipeChain() {
+	blockchain = [genesis];
+}
+
 // Export for AVA unit testing
-export {
+export default {
 	PORT,
 	MINER_REWARD,
 	c,
-	blockchain,
+	blockchain, genesis,
 	Block, Transaction, TxI, TxO,
 	app,
 	hash,
