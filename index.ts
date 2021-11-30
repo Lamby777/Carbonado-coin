@@ -11,11 +11,12 @@ let blockchain: any[] = [];
 const ALPHA58 = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
 
 // Imports
-import Express		from "express";
-import * as HJSON	from "hjson";
-import * as fs		from "fs";
-import baseX		from "base-x";
-import axios		from "axios";
+import Express			from "express";
+import * as HJSON		from "hjson";
+import * as fs			from "fs";
+import baseX			from "base-x";
+import axios			from "axios";
+import writeupReturner	from "./writeup";
 import cleanup = require("./cleanup");
 const base58 = baseX(ALPHA58);
 
@@ -25,7 +26,7 @@ const {
 	Transaction,
 	TxI, TxO,
 	hash,
-} = require("./writeup.js")(blockchain);
+} = writeupReturner(blockchain);
 type BlockType = InstanceType<typeof Block>;
 
 
@@ -36,7 +37,7 @@ let mem: Record<string, any> = {};
 let peers: string[] = [];
 
 // Override cetrain config values if testing
-if (testing && process.env.MODE !== "test-mine") config = {
+if (testing) config = {
 	...config,
 	miner: mine,
 }
@@ -72,7 +73,7 @@ blockchain.push(genesis);
 let {} = app.get("/", (req: any, res: any) => {
 	res.json({
 		blockchain: blockchain,
-		timestamp: Date.now()
+		timestamp: Date.now(),
 	});
 });
 
@@ -88,6 +89,28 @@ if (config.miner) {
 	let routersPush = config.pushToRouters;
 	let routersPull = config.pullFromRouters;
 
+
+
+	// Blockchain receive algorithm
+	let {} = app.post("/newBlock", (req, res) => {
+		// Validate block
+		let blockData = req.body?.newBlockData;
+		if (!blockData) return res.end(400);
+
+		let block: BlockType = new Block(
+			blockData.num, blockData.previous,
+			blockData.body, blockData.timestamp);
+
+		// If valid, add to chain
+		if (true /* valid block */) {
+			// Then add new block to local blockchain
+			blockchain.push(block);
+			res.status(201);
+		} else {
+			res.status(400);
+		} res.end();
+	});
+
 	// PEER DISCOVERY
 
 	// Put own IP on router lists
@@ -97,15 +120,14 @@ if (config.miner) {
 
 	// Take IPs from router lists
 	routersPull.forEach((r: string) => {
-		let {} = axios.get(r).then((res: any) => {
+		let {} = axios.get(r).then((res) => {
 			// Run for each router
 
 			let miners = res.data.content.miners;
-			let ominers = miners.filter(async (peer: any) => {
-
+			let ominers = miners.filter(async (peer: string) => {
 				// Run for each peer in router
 				let val: boolean = null;
-				axios.get("http://" + peer + "/ping").then((res: any) => {
+				axios.get("http://" + peer + "/ping").then((res) => {
 					regLog("Active Peer " + peer);
 					val = true;
 				}).catch((e: Error) => {
@@ -122,20 +144,9 @@ if (config.miner) {
 			//setTimeout(_ => regLog(peers), 3000);
 		});
 	});
-
-	// Blockchain receive algorithm
-	let {} = app.post("/newBlock", (req: any, res: any) => {
-		if (true /* change to flag later*/) {
-			// Validate block
-			let block: BlockType = req.body.blockData;
-
-			// Then add new block to local blockchain
-			Block.generate();
-		}
-	});
 };
 
-let {} = app.listen(PORT, () => {
+let appListen = app.listen(PORT, () => {
 	regLog("Carbonado listening on port " + PORT);
 
 	if (config.miner) {
@@ -158,7 +169,6 @@ function runCarbon(block: BlockType) {
 	} else {
 		difficulty = 3;
 	}
-	
 	
 	// Start hashing
 	const correctPrefix = "0".repeat(difficulty);
@@ -293,7 +303,7 @@ export default {
 	c,
 	blockchain, genesis,
 	Block, Transaction, TxI, TxO,
-	app,
+	app, appListen,
 	hash,
 	mem,
 	peers,

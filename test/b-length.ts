@@ -6,13 +6,14 @@ process.env.MODE = "test";
 // Imports
 import test	from "ava";
 import main	from "../index";
-const writeup = require("../writeup")(main.blockchain);
+import writeupReturner	from "../writeup";
+const writeup = writeupReturner(main.blockchain);
 
 /**
  * Checks if the blockchain length works correctly.
  */
 
-test.serial("Blockchain Lengths", async (t) => {
+test.serial("Chain Lengths", async (t) => {
 	writeup.Block.generate({});
 	writeup.Block.generate({});
 	writeup.Block.generate({});

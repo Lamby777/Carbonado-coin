@@ -9,7 +9,7 @@ const ec = new EC("secp256k1");
 const keypair = "test";
 
 // fix any[] to class later
-function exp(blockchain: any[]): Object {
+function exp(blockchain: any[]) {
 	class Block {
 		public num: number;
 		public previous: string;
@@ -67,7 +67,7 @@ function exp(blockchain: any[]): Object {
 			}
 
 			let block = new Block(num, previous, body);
-			if (chain()) chain().push(block);
+			if (chain && chain()) chain().push(block);
 			return block;
 		}
 
@@ -205,5 +205,5 @@ function exp(blockchain: any[]): Object {
 	}
 }
 
-export = exp;
+export default exp;
 //module.exports = exp;

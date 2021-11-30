@@ -7,20 +7,26 @@ process.env.MODE = "test mine";
 import test		from "ava";
 import request	from "supertest";
 import main		from "../index";
-const writeup = require("../writeup")(main.blockchain);
+import writeupReturner	from "../writeup";
+const writeup = writeupReturner(main.blockchain);
 
 /**
  * Checks if Express is listening for connections
  */
 
-test.serial("Express Server Listening", async (t) => {
+test.serial("/newBlock Integrity", async (t) => {
 	// Wipe blockchain
-	writeup.Block.generate();
+	let block = writeup.Block.generate({
+		content: [],
+	}, null);
 
-	let newChain = main.blockchain;
+	//let newChain = main.blockchain;
 	
 	// POST request new valid block
-	let req = await request(main.app).post("/newBlock")
-	t.is(req.status, 200);
-	t.is(main.blockchain.length, 2)
+	let reqValid = await request(main.app).post("/newBlock")
+		.send({newBlockData: {...block}});
+	t.is(reqValid.status, 201);
+
+	// Chain length
+	t.is(main.blockchain.length, 2);
 });
