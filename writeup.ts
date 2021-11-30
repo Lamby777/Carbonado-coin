@@ -9,7 +9,7 @@ const ec = new EC("secp256k1");
 const keypair = "test";
 
 // fix any[] to class later
-function exp(blockchain: any[]): object {
+function exp(blockchain: any[]): Object {
 	class Block {
 		public num: number;
 		public previous: string;
@@ -46,8 +46,9 @@ function exp(blockchain: any[]): object {
 			return hash(input, format);
 		}
 
-		static generate(body: object,
-						chain: () => any[] = () => blockchain): Block {
+		static generate(body: Object,
+						chain: (() => Block[]) | null
+							= () => blockchain): Block {
 			let prevBlock, previous, num;
 			if (blockchain.length === 0) {
 				prevBlock = null;
@@ -66,7 +67,7 @@ function exp(blockchain: any[]): object {
 			}
 
 			let block = new Block(num, previous, body);
-			chain().push(block);
+			if (chain()) chain().push(block);
 			return block;
 		}
 

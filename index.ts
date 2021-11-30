@@ -3,7 +3,7 @@
 
 // Check execution method
 if (!process.env.MODE) process.env.MODE = "main";
-const testing = process.env.MODE === "test";
+const {mode, testing, mine} = parseEnvMode();
 regLog(`Running in environment "${process.env.MODE}"`);
 
 // Init pre-import variables
@@ -36,9 +36,9 @@ let mem: Record<string, any> = {};
 let peers: string[] = [];
 
 // Override cetrain config values if testing
-if (testing) config = {
+if (testing && process.env.MODE !== "test-mine") config = {
 	...config,
-	miner: false,
+	miner: mine,
 }
 
 // Parse memory file if exists
@@ -275,6 +275,17 @@ function wipeChain() {
 	blockchain = [genesis];
 }
 
+// Parse "mode" env var into object containing flags
+function parseEnvMode() {
+	const marr: string[] = process.env.MODE.toLowerCase().split(" ");
+
+	return {
+		mode:		marr[0],
+		testing:	marr[0] === "test",
+		mine:		marr.includes("mine"),
+	};
+}
+
 // Export for AVA unit testing
 export default {
 	PORT,
@@ -294,4 +305,6 @@ export default {
 	hexToBinary,
 	addressFromPubkey,
 	validateWalletAddress,
+	wipeChain,
+	parseEnvMode,
 }

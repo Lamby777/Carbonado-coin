@@ -1,7 +1,7 @@
 // Script that runs for graceful exit
 "use strict";
 import * as fs from "fs";
-const testing = process.env.MODE === "test";
+const testing = process.env.MODE.startsWith("test-");
 
 // Runs on sigterm / exit
 function cleanup(mem: any): void {

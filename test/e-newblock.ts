@@ -1,7 +1,7 @@
 "use strict";
 
 // Specify execution method
-process.env.MODE = "test";
+process.env.MODE = "test mine";
 
 // Imports
 import test		from "ava";
@@ -15,8 +15,6 @@ const writeup = require("../writeup")(main.blockchain);
 
 test.serial("Express Server Listening", async (t) => {
 	// Wipe blockchain
-	main.blockchain = [main.genesis];
-
 	writeup.Block.generate();
 
 	let newChain = main.blockchain;
