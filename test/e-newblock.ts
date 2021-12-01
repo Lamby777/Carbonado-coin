@@ -29,4 +29,18 @@ test.serial("/newBlock Integrity", async (t) => {
 
 	// Chain length
 	t.is(main.blockchain.length, 2);
+
+	let fakeBlock = writeup.Block.generate({
+		content: [],
+	}, null);
+
+	fakeBlock.hash = "get hacked sucker lol";
+
+	console.log(fakeBlock.hash);
+
+	let reqInvalid = await request(main.app).post("/newBlock")
+		.send({newBlockData: {...fakeBlock}});
+	
+	t.is(reqInvalid.status, 400);
+	t.is(main.blockchain.length, 2);
 });

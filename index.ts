@@ -89,8 +89,6 @@ if (config.miner) {
 	let routersPush = config.pushToRouters;
 	let routersPull = config.pullFromRouters;
 
-
-
 	// Blockchain receive algorithm
 	let {} = app.post("/newBlock", (req, res) => {
 		// Validate block
@@ -99,10 +97,15 @@ if (config.miner) {
 
 		let block: BlockType = new Block(
 			blockData.num, blockData.previous,
-			blockData.body, blockData.timestamp);
+			blockData.body, blockData.timestamp,
+			blockData.hash
+		);
+
+		let valid: boolean = Block.verify(block);
+
 
 		// If valid, add to chain
-		if (true /* valid block */) {
+		if (valid /* valid block */) {
 			// Then add new block to local blockchain
 			blockchain.push(block);
 			res.status(201);

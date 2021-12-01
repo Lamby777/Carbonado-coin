@@ -23,15 +23,16 @@ function exp(blockchain: any[]) {
 			num?: number,
 			previous?: string,
 			body?: any, // fix later
-			timestamp?: number) {
+			timestamp?: number,
+			hash?: string) {
 			
-			this.num = num ? num : blockchain.length,
+			this.num = num ?? blockchain.length,
 			this.previous = previous, // Previous hash
 			this.body = body !== undefined ? body : null,
 			this.timestamp = timestamp || new Date().getTime(),
 			this.difficultyLocale = null, // Difficulty at the time of verification
 			this.nonces = [],
-			this.hash = Block.hash(this);
+			this.hash = hash ?? Block.hash(this);
 		}
 
 		static hash(
