@@ -5,42 +5,39 @@ process.env.MODE = "test mine";
 
 // Imports
 import test		from "ava";
+import {Block}	from "../classes";
 import request	from "supertest";
-import main		from "../index";
-import writeupReturner	from "../writeup";
-const writeup = writeupReturner(main.blockchain);
+import {app}	from "../index";
 
 /**
  * Checks if Express is listening for connections
  */
 
 test.serial("/newBlock Integrity", async (t) => {
-	// Wipe blockchain
-	let block = writeup.Block.generate({
-		content: [],
-	}, null);
+	let protoblock = () =>
+		Block.generate({transactions: []}, null);
 
-	//let newChain = main.blockchain;
+	// Dummy block not pushed to chain
+	let block = protoblock();
 	
 	// POST request new valid block
-	let reqValid = await request(main.app).post("/newBlock")
+	let reqValid = await request(app).post("/newBlock")
 		.send({newBlockData: {...block}});
 	t.is(reqValid.status, 201);
 
-	// Chain length
-	t.is(main.blockchain.length, 2);
+	// Assert chain length
+	t.is((global as any).blockchain.length, 2);
 
-	let fakeBlock = writeup.Block.generate({
-		content: [],
-	}, null);
-
+	// Block's hash is tampered
+	let fakeBlock = protoblock();
+	
 	fakeBlock.hash = "get hacked sucker lol";
 
-	console.log(fakeBlock.hash);
-
-	let reqInvalid = await request(main.app).post("/newBlock")
+	// Send fake block and wait for the inevitable Error 400
+	let reqInvalid = await request(app).post("/newBlock")
 		.send({newBlockData: {...fakeBlock}});
 	
+	// Assert error code and make sure chain isn't updated
 	t.is(reqInvalid.status, 400);
-	t.is(main.blockchain.length, 2);
+	t.is((global as any).blockchain.length, 2);
 });

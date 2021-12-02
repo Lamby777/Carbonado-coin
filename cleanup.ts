@@ -13,4 +13,4 @@ function cleanup(mem: any): void {
 		fs.writeFileSync("nodemem.json", JSON.stringify(mem), "utf8");
 }
 
-export = cleanup;
+export default cleanup;

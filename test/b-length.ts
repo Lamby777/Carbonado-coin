@@ -4,20 +4,20 @@
 process.env.MODE = "test";
 
 // Imports
-import test	from "ava";
-import main	from "../index";
-import writeupReturner	from "../writeup";
-const writeup = writeupReturner(main.blockchain);
+import test		from "ava";
+import {Block}	from "../classes";
+import "../index";
 
 /**
  * Checks if the blockchain length works correctly.
  */
 
 test.serial("Chain Lengths", async (t) => {
-	writeup.Block.generate({});
-	writeup.Block.generate({});
-	writeup.Block.generate({});
-	writeup.Block.generate({});
-	// 4 blocks + 1 genesis = 5 blocks in chain
-	t.is(main.blockchain.length, 5);
+	
+	// Push 99 dummy blocks to chain
+	for (let i = 0; i<99; i++)
+		Block.generate({transactions: []}, () => (global as any).blockchain);
+	
+	// 99 blocks + 1 genesis = 100 blocks in chain
+	t.is((global as any).blockchain.length, 100);
 });

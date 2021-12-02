@@ -7,28 +7,28 @@ const {mode, testing, mine} = parseEnvMode();
 regLog(`Running in environment "${process.env.MODE}"`);
 
 // Init pre-import variables
-let blockchain: any[] = [];
 const ALPHA58 = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
 
 // Imports
-import Express			from "express";
-import * as HJSON		from "hjson";
-import * as fs			from "fs";
-import baseX			from "base-x";
-import axios			from "axios";
-import writeupReturner	from "./writeup";
-import cleanup = require("./cleanup");
-const base58 = baseX(ALPHA58);
+import Express		from "express";
+import * as HJSON	from "hjson";
+import * as fs		from "fs";
+import baseX		from "base-x";
+import axios		from "axios";
+import cleanup		from "./cleanup";
 
-// Import blockchain classes/functions from writeup
-const {
+import {
 	Block,
 	Transaction,
 	TxI, TxO,
 	hash,
-} = writeupReturner(blockchain);
-type BlockType = InstanceType<typeof Block>;
+} from "./classes";
 
+const base58 = baseX(ALPHA58);
+
+// Import blockchain classes/functions from writeup
+type BlockType = InstanceType<typeof Block>;
+(global as any).blockchain = [];
 
 // Read files
 const configContent: string = fs.readFileSync("config.hjson", "utf8");
@@ -62,17 +62,17 @@ app.use(Express.json());
 
 // Add genesis to blockchain
 const genesis: BlockType = new Block(0, "", {
-	content: [],
+	transactions: [],
 }, 1636962514638);
 
-blockchain.push(genesis);
+(global as any).blockchain.push(genesis);
 
 
 
 // Reply with blockchain if requested
 let {} = app.get("/", (req: any, res: any) => {
 	res.json({
-		blockchain: blockchain,
+		blockchain: (global as any).blockchain,
 		timestamp: Date.now(),
 	});
 });
@@ -107,7 +107,7 @@ if (config.miner) {
 		// If valid, add to chain
 		if (valid /* valid block */) {
 			// Then add new block to local blockchain
-			blockchain.push(block);
+			(global as any).blockchain.push(block);
 			res.status(201);
 		} else {
 			res.status(400);
@@ -225,9 +225,9 @@ function verifyBlockchain(blockchain: any[]): boolean {
 }
 
 function blockchainLengthDilemma(newChain: any[]): void {
-	if (newChain.length > blockchain.length &&	// New chain longer
+	if (newChain.length > (global as any).blockchain.length &&	// New chain longer
 		verifyBlockchain(newChain)) {			// New chain valid
-		blockchain = newChain;
+		(global as any).blockchain = newChain;
 	}
 }
 
@@ -285,7 +285,7 @@ function regLog(...val: any[]): void {
 }
 
 function wipeChain() {
-	blockchain = [genesis];
+	(global as any).blockchain = [genesis];
 }
 
 // Parse "mode" env var into object containing flags
@@ -300,11 +300,11 @@ function parseEnvMode() {
 }
 
 // Export for AVA unit testing
-export default {
+export {
 	PORT,
 	MINER_REWARD,
 	c,
-	blockchain, genesis,
+	genesis,
 	Block, Transaction, TxI, TxO,
 	app, appListen,
 	hash,
