@@ -117,19 +117,27 @@ export class Block {
 
 
 	static verify(block: Block): boolean {
-		// Innocent until proven guilty :)
-		let valid = true;
 		let prevBlock = blockchain.filter(val => val.num === block.num-1)[0];
 
-		if ((block.num !== 0 && // First 2 checks don't apply to genesis
-			(!prevBlock || // Block doesn't exist
-			(prevBlock.hash !== block.previous))) // Block P-hash fail
+		const failCases = [
+			// Block hash doesn't match own recorded hash
+			Block.hash(block) !== block.hash,
 			
-			|| // Genesis checks this part
-			(Block.hash(block) !== block.hash)) { // Block was tampered
-			valid = false;
-		}
-		return valid;
+			// Block was sent by a time-traveler... or a hacker.
+			block.timestamp > Date.now(),
+
+
+			////// Following checksums do not apply for genesis
+			
+			// Previous block does not exist
+			block.num !== 0 && !prevBlock,
+
+			// Block's recorded prevhash doesn't match previous's hash
+			block.num !== 0 && prevBlock.hash !== block.previous,
+		]
+		
+		// Check for tampering
+		return !(failCases.includes(true));
 	}
 }
 
