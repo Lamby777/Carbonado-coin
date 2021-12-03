@@ -153,7 +153,7 @@ if (config.miner) {
 	});
 };
 
-let appListen = app.listen(PORT, () => {
+let appListen = app.listen(PORT, async () => {
 	regLog("Carbonado listening on port " + PORT);
 
 	if (config.miner) {
@@ -165,7 +165,7 @@ let appListen = app.listen(PORT, () => {
 
 
 // Main mining algorithm
-function runCarbon(block: BlockType) {
+async function runCarbon(block: BlockType) {
 	let res, difficulty,
 		solved = false,
 		nonce = generateNonce();
@@ -193,7 +193,22 @@ function runCarbon(block: BlockType) {
 
 	if (res) { // If didn't exit early
 		console.log(`Verified block ${block.num} nonce ${nonce}`);
-		// Send results to other nodes
+		
+		// Pick some nodes to send to
+		let reqcount = peers.length;
+		if (reqcount === 0) {
+			console.log("Found block, but peer list empty!");
+			// Later, add a way to save up nonces locally
+		}
+		
+		reqcount = Math.floor(reqcount ** 0.9);
+		if (reqcount > 5000) reqcount = 5000;
+
+		let nodes = await getNodes(reqcount);
+
+		// Send to the nodes
+
+		//
 		
 		// Then resolve promise
 		return res;
@@ -231,8 +246,36 @@ function blockchainLengthDilemma(newChain: any[]): void {
 	}
 }
 
-function getNodes(amount: number = 1) {
-	//
+export async function getNodes(amount: number = 1,
+								active: boolean = true):
+									Promise<string[] | null> {
+	if (peers.length === 0) return;
+
+	// Cloning arrays Dolly-style :)
+	let arr = [...peers];
+	let narr = [];
+
+	// Get n nodes
+	for (let i = 0; i < amount; i++) {
+		if (arr.length === 0) return;
+		
+		let picked = cindex(arr);
+		let req = await axios.get(arr[picked]);
+
+		if (req.status === 200) {
+			narr.push(arr[picked] + "/ping");
+			arr.splice(picked);
+		} else {
+			console.log("Peer "+ arr[picked] +" not responsive!")
+		}
+	}
+
+	return narr.length ? narr : null;
+}
+
+// Pick index of array
+export function cindex(arr: any[]) {
+	return Math.floor(Math.random() * arr.length);
 }
 
 function generateNonce(): number {
