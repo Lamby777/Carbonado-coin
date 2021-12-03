@@ -39,6 +39,7 @@ const configContent: string = fs.readFileSync("config.hjson", "utf8");
 let config: Record<string, any> = HJSON.parse(configContent);
 let mem: Record<string, any> = {};
 let peers: string[] = [];
+let peersAvailable: boolean = false;
 
 // Override cetrain config values if testing
 if (testing) config = {
@@ -141,17 +142,19 @@ if (config.miner) {
 					console.error(e.message);
 					val = false;
 				}).finally(() => {
+					if (val && peers.length) peersAvailable = true;
 					return val;
 				});
 			});
 
 			peers = combineArrays(peers, ominers);
+			if (peers.length === 0) peersAvailable = false;
 			//peers = peers.concat(ominers);
-		}).catch((e: Error) => {console.error(e)}).finally(() => {
+		}).catch((e: Error) => {console.error(e)});//.finally(() => {
 			//setTimeout(_ => regLog(peers), 3000);
-		});
+		//});
 	});
-};
+}
 
 let appListen = app.listen(PORT, async () => {
 	regLog("Carbonado listening on port " + PORT);

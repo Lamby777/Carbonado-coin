@@ -1,4 +1,4 @@
 # HEY, REPLIT USERS! HAVING PROBLEMS?
 # Download the v16 binary via npm in shell
-#run = "./node16 index.js"
-run = "echo STOP STARTING MY REPL RANDOMLY IDIOT"
+run = "./node16 index.js"
+#run = "echo STOP STARTING MY REPL RANDOMLY IDIOT"
