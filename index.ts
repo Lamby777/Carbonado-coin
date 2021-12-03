@@ -204,11 +204,11 @@ async function runCarbon(block: BlockType) {
 		reqcount = Math.floor(reqcount ** 0.9);
 		if (reqcount > 5000) reqcount = 5000;
 
-		let nodes = await getNodes(reqcount);
+		const nodes: string[] = await getNodes(reqcount);
 
 		// Send to the nodes
-
-		//
+		for (const node of nodes)
+			axios.post(node + "/newBlock", res);
 		
 		// Then resolve promise
 		return res;
@@ -248,8 +248,8 @@ function blockchainLengthDilemma(newChain: any[]): void {
 
 export async function getNodes(amount: number = 1,
 								active: boolean = true):
-									Promise<string[] | null> {
-	if (peers.length === 0) return;
+									Promise<string[]> {
+	if (peers.length === 0) return [];
 
 	// Cloning arrays Dolly-style :)
 	let arr = [...peers];
@@ -260,17 +260,17 @@ export async function getNodes(amount: number = 1,
 		if (arr.length === 0) return;
 		
 		let picked = cindex(arr);
-		let req = await axios.get(arr[picked]);
 
-		if (req.status === 200) {
-			narr.push(arr[picked] + "/ping");
+		if ((!active) ||
+			((await axios.get(arr[picked] + "/ping")).status === 200)) {
+			narr.push(arr[picked]);
 			arr.splice(picked);
 		} else {
 			console.log("Peer "+ arr[picked] +" not responsive!")
 		}
 	}
 
-	return narr.length ? narr : null;
+	return narr;
 }
 
 // Pick index of array
