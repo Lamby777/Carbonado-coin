@@ -4,9 +4,9 @@
 process.env.MODE = "test";
 
 // Imports
-import test					from "ava";
-import {Block}				from "../classes";
-import {verifyBlockchain}	from "../index";
+import test								from "ava";
+import {blockchain, verifyBlockchain}	from "../index";
+import {Block}							from "../classes";
 
 /**
  * Checks if a block's hash is stored in its successor.
@@ -22,5 +22,5 @@ test.serial("Hash Succession", async (t) => {
 	});
 
 	t.is(b2.previous, b1.hash);
-	t.true(verifyBlockchain((global as any).blockchain));
+	t.true(verifyBlockchain(blockchain));
 });

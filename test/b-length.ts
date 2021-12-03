@@ -4,9 +4,9 @@
 process.env.MODE = "test";
 
 // Imports
-import test		from "ava";
-import {Block}	from "../classes";
-import "../index";
+import test				from "ava";
+import {blockchain}		from "../index";
+import {Block}			from "../classes";
 
 /**
  * Checks if the blockchain length works correctly.
@@ -16,8 +16,8 @@ test.serial("Chain Lengths", async (t) => {
 	
 	// Push 99 dummy blocks to chain
 	for (let i = 0; i<99; i++)
-		Block.generate({transactions: []}, () => (global as any).blockchain);
+		Block.generate({transactions: []}, () => blockchain);
 	
 	// 99 blocks + 1 genesis = 100 blocks in chain
-	t.is((global as any).blockchain.length, 100);
+	t.is(blockchain.length, 100);
 });

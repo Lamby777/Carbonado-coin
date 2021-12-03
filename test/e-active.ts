@@ -5,7 +5,6 @@ process.env.MODE = "test";
 
 // Imports
 import test		from "ava";
-import {Block}	from "../classes";
 import request	from "supertest";
 import {app}	from "../index";
 

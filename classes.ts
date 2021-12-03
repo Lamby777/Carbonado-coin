@@ -1,12 +1,12 @@
 // Code writeup module for use in index.js
 "use strict";
 
+import {blockchain}	from "./index";
 import * as crypto	from "crypto";
 import {ec as EC}	from "elliptic";
 const ec = new EC("secp256k1");
 
 const keypair = "test";
-export let blockchain: any[] = [];
 
 // Amazing how you can write "type Script" in TypeScript
 export interface Script {
@@ -206,5 +206,3 @@ export class TxO {
 		// update spent status of old UTXOs
 	}
 }
-
-//module.exports = exp;

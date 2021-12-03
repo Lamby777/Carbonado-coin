@@ -4,10 +4,10 @@
 process.env.MODE = "test mine";
 
 // Imports
-import test		from "ava";
-import {Block}	from "../classes";
-import request	from "supertest";
-import {app}	from "../index";
+import test					from "ava";
+import request				from "supertest";
+import {blockchain, app}	from "../index";
+import {Block}				from "../classes";
 
 /**
  * Checks if Express is listening for connections
@@ -26,7 +26,7 @@ test.serial("/newBlock Integrity", async (t) => {
 	t.is(reqValid.status, 201);
 
 	// Assert chain length
-	t.is((global as any).blockchain.length, 2);
+	t.is(blockchain.length, 2);
 
 	// Block's hash is tampered
 	let fakeBlock = protoblock();
@@ -39,5 +39,5 @@ test.serial("/newBlock Integrity", async (t) => {
 	
 	// Assert error code and make sure chain isn't updated
 	t.is(reqInvalid.status, 400);
-	t.is((global as any).blockchain.length, 2);
+	t.is(blockchain.length, 2);
 });

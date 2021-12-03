@@ -19,6 +19,8 @@ import cleanup		from "./cleanup";
 
 import {
 	Block,
+	Declaration,
+	Script,
 	Transaction,
 	TxI, TxO,
 	hash,
@@ -28,7 +30,9 @@ const base58 = baseX(ALPHA58);
 
 // Import blockchain classes/functions from writeup
 type BlockType = InstanceType<typeof Block>;
-(global as any).blockchain = [];
+type DeclarationType = InstanceType<typeof Declaration>;
+
+export let blockchain: BlockType[] = [];
 
 // Read files
 const configContent: string = fs.readFileSync("config.hjson", "utf8");
@@ -65,14 +69,14 @@ const genesis: BlockType = new Block(0, "", {
 	transactions: [],
 }, 1636962514638);
 
-(global as any).blockchain.push(genesis);
+blockchain.push(genesis);
 
 
 
 // Reply with blockchain if requested
 let {} = app.get("/", (req: any, res: any) => {
 	res.json({
-		blockchain: (global as any).blockchain,
+		blockchain: blockchain,
 		timestamp: Date.now(),
 	});
 });
@@ -107,7 +111,7 @@ if (config.miner) {
 		// If valid, add to chain
 		if (valid /* valid block */) {
 			// Then add new block to local blockchain
-			(global as any).blockchain.push(block);
+			blockchain.push(block);
 			res.status(201);
 		} else {
 			res.status(400);
@@ -167,11 +171,7 @@ function runCarbon(block: BlockType) {
 		nonce = generateNonce();
 	
 	// Update difficulty
-	if (testing) {
-		difficulty = 3; // Set low because Replit doesn't like mining
-	} else {
-		difficulty = 3;
-	}
+	difficulty = 3; // Set low because Replit doesn't like mining
 	
 	// Start hashing
 	const correctPrefix = "0".repeat(difficulty);
@@ -225,10 +225,14 @@ function verifyBlockchain(blockchain: any[]): boolean {
 }
 
 function blockchainLengthDilemma(newChain: any[]): void {
-	if (newChain.length > (global as any).blockchain.length &&	// New chain longer
+	if (newChain.length > blockchain.length &&	// New chain longer
 		verifyBlockchain(newChain)) {			// New chain valid
-		(global as any).blockchain = newChain;
+		blockchain = newChain;
 	}
+}
+
+function getNodes(amount: number = 1) {
+	//
 }
 
 function generateNonce(): number {
@@ -285,7 +289,11 @@ function regLog(...val: any[]): void {
 }
 
 function wipeChain() {
-	(global as any).blockchain = [genesis];
+	blockchain = [genesis];
+}
+
+function replaceChain(newchain: any[]) {
+	blockchain = newchain;
 }
 
 // Parse "mode" env var into object containing flags
