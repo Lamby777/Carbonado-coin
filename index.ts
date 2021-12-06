@@ -7,7 +7,9 @@ const {mode, testing, mine} = parseEnvMode();
 regLog(`Running in environment "${process.env.MODE}"`);
 
 // Init pre-import variables
-const ALPHA58 = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
+const ALPHA58 = "123456789" +
+				"ABCDEFGHJKLMNPQRSTUVWXYZ" +
+				"abcdefghijkmnopqrstuvwxyz";
 
 // Imports
 import Express		from "express";
@@ -133,9 +135,13 @@ if (config.miner) {
 
 			let miners = res.data.content.miners;
 			let ominers = miners.filter(async (peer: string) => {
+				// If IPv6, wrap in brackets for Axios
+				if (!peer.includes(".")) peer = `[${peer}]`;
+				console.log(peer);
+
 				// Run for each peer in router
 				let val: boolean = null;
-				axios.get("http://" + peer + "/ping").then((res) => {
+				axios.get("http://" + peer + ":11870/ping").then((res) => {
 					regLog("Active Peer " + peer);
 					val = true;
 				}).catch((e: Error) => {
@@ -182,8 +188,8 @@ async function runCarbon(block: BlockType) {
 		res = Block.hash(block, nonce, "hex");
 
 		// Check if hash passes repeating 0s checksum
-		if (hexToBinary(res)
-			.startsWith(correctPrefix)) solved = true;
+		if (hexToBinary(res).startsWith(correctPrefix))
+			solved = true;
 
 		// Check if someone else solved
 		if (false) {

@@ -24,9 +24,9 @@ export class TokenDeclaration {
 }
 
 export type BlockBody = {
-	transactions?: Transaction[];
-	declarations?: Declaration[];
-	actions?: Script[];
+	transactions?:	Transaction[];
+	declarations?:	Declaration[];
+	actions?:		Script[];
 }
 
 export class Transaction {
@@ -126,8 +126,7 @@ export class Block {
 			// Block was sent by a time-traveler... or a hacker.
 			block.timestamp > Date.now(),
 
-
-			////// Following checksums do not apply for genesis
+			///// Following checksums do not apply for genesis
 			
 			// Previous block does not exist
 			block.num !== 0 && !prevBlock,
@@ -142,7 +141,7 @@ export class Block {
 }
 
 export class TxI {
-	public sig: string;
+	public sig: string = "";
 
 	constructor(
 		public fromNum?: number,
@@ -150,8 +149,8 @@ export class TxI {
 		public amount?: number) {
 		this.fromNum = fromNum,
 		this.fromId = fromId,
-		this.amount = amount,
-		this.sig = "";
+		this.amount = amount;
+		//this.sig = "";
 	}
 
 	static sign(
