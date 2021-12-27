@@ -38,10 +38,9 @@ export let blockchain: BlockType[] = [];
 
 // Read files
 const configContent: string = fs.readFileSync("config.hjson", "utf8");
-let config: Record<string, any> = HJSON.parse(configContent);
-let mem: Record<string, any> = {};
-let peers: string[] = [];
-let peersAvailable: boolean = false;
+export let config: Record<string, any> = HJSON.parse(configContent);
+export let mem: Record<string, any> = {};
+export let peers: string[] = [];
 
 // Override cetrain config values if testing
 if (testing) config = {
@@ -60,15 +59,15 @@ try {
 // Hard Constants and Default Values
 export const PORT = 11870;
 export const MINER_REWARD = 1;
-let c = 70;
+export let c = 70;
 
 // Start Express server for peers to use
-const app = Express();
+export const app = Express();
 app.use(Express.json());
 
 
 // Add genesis to blockchain
-const genesis: BlockType = new Block(0, "", {
+export const genesis: BlockType = new Block(0, "", {
 	transactions: [],
 }, 1636962514638);
 
@@ -162,7 +161,7 @@ if (config.miner) {
 	});
 }
 
-let appListen = app.listen(PORT, async () => {
+export let appListen = app.listen(PORT, async () => {
 	regLog("Carbonado listening on port " + PORT);
 
 	if (config.miner) {
@@ -361,12 +360,7 @@ export function parseEnvMode() {
 
 // Export for AVA unit testing
 export {
-	c, // add getter later, this is some real spaghetti-level idiocy ._.
-	genesis,
-	Block, Transaction, TxI, TxO,
-	app, appListen,
-	hash,
-	mem,
-	peers,
-	config,
+	// add getter later, this is some real spaghetti-level idiocy ._.
+	Block, Transaction,
+	TxI, TxO, hash,
 }
