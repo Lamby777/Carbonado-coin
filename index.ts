@@ -41,6 +41,7 @@ const configContent: string = fs.readFileSync("config.hjson", "utf8");
 export let config: Record<string, any> = HJSON.parse(configContent);
 export let mem: Record<string, any> = {};
 export let peers: string[] = [];
+export let peersAvailable: boolean = false;
 
 // Override cetrain config values if testing
 if (testing) config = {
