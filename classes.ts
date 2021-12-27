@@ -29,15 +29,16 @@ export type BlockBody = {
 	actions?:		Script[];
 }
 
-export class Wallet {}
-
 export class Transaction {
 	public static list: Transaction[]; // List of all transactions
 	public index: number;
 	
-	constructor(public sender: Wallet, public outputs: Wallet) {
+	constructor(public sender: string, public outputs: string) {
 		this.index = Transaction.list.length;
 		Transaction.list.push(this);
+
+		// TODO
+		// Import Tx list from other nodes, THEN start adding on to that
 	}
 
 	// Does the same thing as hash()
