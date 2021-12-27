@@ -32,12 +32,12 @@ export type BlockBody = {
 export class Wallet {}
 
 export class Transaction {
-	public static all: Transaction[];
+	public static list: Transaction[]; // List of all transactions
 	public index: number;
 	
 	constructor(public sender: Wallet, public outputs: Wallet) {
-		this.index = Transaction.all.length;
-		Transaction.all.push(this);
+		this.index = Transaction.list.length;
+		Transaction.list.push(this);
 	}
 
 	// Does the same thing as hash()
@@ -74,6 +74,7 @@ export class Block {
 		this.hash = hash ?? Block.hash(this);
 	}
 
+	// Get hash of a block
 	static hash(
 		block: Block,
 		nonce?: number,
@@ -86,15 +87,22 @@ export class Block {
 		return hash(input, format);
 	}
 
+	/*	Create a block
+	* Unlike using "new Block()," this method gets the block
+	* ready for being a part of the blockchain. Don't use this
+	* for temporary "throwaway" blocks, since they'll be permanent!
+	*/
 	static generate(body: BlockBody,
 					chain: (() => Block[]) | null
 						= () => blockchain): Block {
 		let prevBlock, previous, num;
 		if (blockchain.length === 0) {
+			// If genesis block
 			prevBlock = null;
 			previous = "";
 			num = 0;
 		} else {
+			// If... not genesis block?
 			prevBlock = blockchain[blockchain.length-1];
 			previous = prevBlock.hash;
 			num = prevBlock.num + 1;
@@ -113,8 +121,10 @@ export class Block {
 
 
 	static verify(block: Block): boolean {
+		// Get actual previous block from current block's index
 		let prevBlock = blockchain.filter(val => val.num === block.num-1)[0];
 
+		// If any of these booleans is "true," we got a problem.
 		const failCases = [
 			// Block hash doesn't match own recorded hash
 			Block.hash(block) !== block.hash,
@@ -123,12 +133,13 @@ export class Block {
 			block.timestamp > Date.now(),
 
 			///// Following checksums do not apply for genesis
-			
-			// Previous block does not exist
-			block.num !== 0 && !prevBlock,
+			block.num !== 0 && (
+				// Previous block does not exist
+				!prevBlock ||
 
-			// Block's recorded prevhash doesn't match previous's hash
-			block.num !== 0 && prevBlock.hash !== block.previous,
+				// Block's recorded prevhash doesn't match previous's hash
+				prevBlock.hash !== block.previous
+			)
 		]
 		
 		// Check for tampering
