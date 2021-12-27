@@ -10,9 +10,9 @@ const keypair = "test";
 
 // Amazing how you can write "type Script" in TypeScript
 export interface Script {
-	code: string,
-	sigs: Record<string, string>,
-	author?: string,
+	code:		string,
+	sigs:		Record<string, string>,
+	author?:	string,
 }
 
 export class Declaration {
@@ -53,16 +53,16 @@ export function hash(input: any, format?: string): string {
 }
 
 export class Block {
-	public localeCVal: number | null; // Hey, that rhymes!
-	public nonces: number[];
-	public solvedBy: string[];
+	public localeCVal:	number | null; // Hey, that rhymes!
+	public nonces:		number[];
+	public solvedBy:	string[];
 
 	constructor(
-		public num?: number,
-		public previous?: string,
-		public body?: BlockBody | null, // fix later
-		public timestamp?: number,
-		public hash?: string) {
+		public num?:		number,
+		public previous?:	string,
+		public body?:		BlockBody | null, // fix later
+		public timestamp?:	number,
+		public hash?:		string) {
 
 		this.num = num ?? blockchain.length,
 		this.previous = previous, // Previous hash
@@ -76,9 +76,9 @@ export class Block {
 
 	// Get hash of a block
 	static hash(
-		block: Block,
-		nonce?: number,
-		format?: string): string {
+		block:		Block,
+		nonce?:		number,
+		format?:	string): string {
 		// For mining
 		let trueNonce = nonce ? nonce : block.nonces[0];
 		let input = block.num + block.previous +
@@ -92,8 +92,8 @@ export class Block {
 	* ready for being a part of the blockchain. Don't use this
 	* for temporary "throwaway" blocks, since they'll be permanent!
 	*/
-	static generate(body: BlockBody,
-					chain: (() => Block[]) | null
+	static generate(body:	BlockBody,
+					chain:	(() => Block[]) | null
 						= () => blockchain): Block {
 		let prevBlock, previous, num;
 		if (blockchain.length === 0) {
