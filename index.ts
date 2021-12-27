@@ -38,10 +38,10 @@ export let blockchain: BlockType[] = [];
 
 // Read files
 const configContent: string = fs.readFileSync("config.hjson", "utf8");
-let config: Record<string, any> = HJSON.parse(configContent);
-let mem: Record<string, any> = {};
-let peers: string[] = [];
-let peersAvailable: boolean = false;
+export let config: Record<string, any> = HJSON.parse(configContent);
+export let mem: Record<string, any> = {};
+export let peers: string[] = [];
+export let peersAvailable: boolean = false;
 
 // Override cetrain config values if testing
 if (testing) config = {
@@ -58,17 +58,17 @@ try {
 
 
 // Hard Constants and Default Values
-const PORT = 11870;
-const MINER_REWARD = 1;
-let c = 70;
+export const PORT = 11870;
+export const MINER_REWARD = 1;
+export let c = 70;
 
 // Start Express server for peers to use
-const app = Express();
+export const app = Express();
 app.use(Express.json());
 
 
 // Add genesis to blockchain
-const genesis: BlockType = new Block(0, "", {
+export const genesis: BlockType = new Block(0, "", {
 	transactions: [],
 }, 1636962514638);
 
@@ -162,7 +162,7 @@ if (config.miner) {
 	});
 }
 
-let appListen = app.listen(PORT, async () => {
+export let appListen = app.listen(PORT, async () => {
 	regLog("Carbonado listening on port " + PORT);
 
 	if (config.miner) {
@@ -174,7 +174,7 @@ let appListen = app.listen(PORT, async () => {
 
 
 // Main mining algorithm
-async function runCarbon(block: BlockType) {
+export async function runCarbon(block: BlockType) {
 	let res, difficulty,
 		solved = false,
 		nonce = generateNonce();
@@ -244,11 +244,11 @@ let {} = process.on("SIGINT", () => {
 // Functions
 
 // Checks if blockchain given is valid
-function verifyBlockchain(blockchain: any[]): boolean {
+export function verifyBlockchain(blockchain: any[]): boolean {
 	return blockchain.every(n => Block.verify(n));
 }
 
-function blockchainLengthDilemma(newChain: any[]): void {
+export function blockchainLengthDilemma(newChain: any[]): void {
 	if (newChain.length > blockchain.length &&	// New chain longer
 		verifyBlockchain(newChain)) {			// New chain valid
 		blockchain = newChain;
@@ -287,12 +287,12 @@ export function cindex(arr: any[]) {
 	return Math.floor(Math.random() * arr.length);
 }
 
-function generateNonce(): number {
+export function generateNonce(): number {
 	return Math.random() * Date.now();
 }
 
 // Gonna be real with you, I took this straight from "The Stack"
-function hexToBinary(hex: string): string {
+export function hexToBinary(hex: string): string {
 	hex = hex.replace("0x", "").toLowerCase();
 	var out = "";
 	for(var c of hex) {
@@ -324,14 +324,14 @@ function combineArrays(a: any[], b: any[]): any[] {
 }
 
 // Generates a wallet address from Public Key
-function addressFromPubkey(key: string): string {
+export function addressFromPubkey(key: string): string {
 	key = hash(key, "hex");
 	let addr = base58.encode(Buffer.from(key));
 	return key;
 }
 
 // Reverse of addressFromPubkey();
-function validateWalletAddress(addr: string): boolean {
+export function validateWalletAddress(addr: string): boolean {
 	return true; // typescript moment :/
 }
 
@@ -340,16 +340,16 @@ function regLog(...val: any[]): void {
 	if (!testing) console.log(...val);
 }
 
-function wipeChain() {
+export function wipeChain() {
 	blockchain = [genesis];
 }
 
-function replaceChain(newchain: any[]) {
+export function replaceChain(newchain: any[]) {
 	blockchain = newchain;
 }
 
 // Parse "mode" env var into object containing flags
-function parseEnvMode() {
+export function parseEnvMode() {
 	const marr: string[] = process.env.MODE.toLowerCase().split(" ");
 
 	return {
@@ -361,23 +361,7 @@ function parseEnvMode() {
 
 // Export for AVA unit testing
 export {
-	PORT,
-	MINER_REWARD,
-	c,
-	genesis,
-	Block, Transaction, TxI, TxO,
-	app, appListen,
-	hash,
-	mem,
-	peers,
-	config,
-	runCarbon,
-	verifyBlockchain,
-	blockchainLengthDilemma,
-	generateNonce,
-	hexToBinary,
-	addressFromPubkey,
-	validateWalletAddress,
-	wipeChain,
-	parseEnvMode,
+	// add getter later, this is some real spaghetti-level idiocy ._.
+	Block, Transaction,
+	TxI, TxO, hash,
 }
