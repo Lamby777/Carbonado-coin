@@ -24,6 +24,7 @@ import {
 	Declaration,
 	Script,
 	Transaction,
+	TxI, TxO,
 	hash,
 } from "./classes";
 
@@ -361,5 +362,6 @@ export function parseEnvMode() {
 // Export for AVA unit testing
 export {
 	// add getter later, this is some real spaghetti-level idiocy ._.
-	Block, Transaction, hash
+	Block, Transaction,
+	TxI, TxO, hash,
 }

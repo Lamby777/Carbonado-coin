@@ -30,15 +30,18 @@ export type BlockBody = {
 }
 
 export class Transaction {
-	public static list: Transaction[]; // List of all transactions
-	public index: number;
-	
-	constructor(public sender: string, public outputs: string) {
-		this.index = Transaction.list.length;
-		Transaction.list.push(this);
+	constructor(public inputs: TxI[], public outputs: TxO[]) {}
 
-		// TODO
-		// Import Tx list from other nodes, THEN start adding on to that
+	get id(): string {
+		let inputData = this.inputs
+			.map((txI) => txI.fromNum + txI.fromId + txI.amount)
+			.reduce((a, b) => a + b, "");
+
+		let outputData = this.outputs
+			.map((txO) => txO.num + txO.addr + txO.amount)
+			.reduce((a, b) => a + b, "");
+		
+		return Transaction.hash(inputData, outputData);
 	}
 
 	// Does the same thing as hash()
@@ -145,5 +148,71 @@ export class Block {
 		
 		// Check for tampering
 		return !(failCases.includes(true));
+	}
+}
+
+export class TxI {
+	public sig: string = "";
+
+	constructor(
+		public fromNum?: number,
+		public fromId?: string,
+		public amount?: number) {
+		this.fromNum = fromNum,
+		this.fromId = fromId,
+		this.amount = amount;
+		//this.sig = "";
+	}
+
+	static sign(
+		transaction: Transaction,
+		txI: TxI,
+		privKey: string): number[] {
+		//UTXOs: TxO[] ) {
+		
+		/*if (txI instanceof Number) {
+			txI = transaction.inputs[txI];
+		}*/
+
+		const sigData = transaction.id; // apparently () big bad
+		const referencedUTXO = TxO.getUnspentByNum(
+			/*txI.fromId,*/ txI.fromNum);
+		//const referencedAddress = referencedUTXO.address;
+		const key = ec.keyFromPrivate(privKey, "hex");
+		return key.sign(sigData).toDER();
+	}
+}
+
+export class TxO {
+	// List of all TXOs, including spent
+	public static list: TxO[] = [];
+	public num: number;
+
+	constructor(
+		public addr: string,
+		public amount: number,
+		public spent: boolean) {
+		this.num = TxO.list.length,
+		this.addr = addr,
+		this.amount = amount;
+		this.spent = spent;
+
+		// Push to UTXOs list if not spent
+		TxO.list.push(this);
+	}
+
+	// Query TXO list for unspent with matching num
+	static getUnspentByNum(num: number) {
+		return TxO.list.find(val =>
+			(val.num === num) && (!val.spent));
+	}
+
+	static get unspent() {
+		return TxO.list.filter((val: any) => !val.spent);
+	}
+
+	static updateUnspent() {
+		// Check blockchain for new in/outs and
+		// update spent status of old UTXOs
 	}
 }
