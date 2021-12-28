@@ -10,9 +10,9 @@ const keypair = "test";
 
 // Amazing how you can write "type Script" in TypeScript
 export interface Script {
-	code: string,
-	sigs: Record<string, string>,
-	author?: string,
+	code:		string,
+	sigs:		Record<string, string>,
+	author?:	string,
 }
 
 export class Declaration {
@@ -57,16 +57,16 @@ export function hash(input: any, format?: string): string {
 }
 
 export class Block {
-	public localeCVal: null | number; // Hey, that rhymes!
-	public nonces: number[];
-	public solvedBy: string[];
+	public localeCVal:	number | null; // Hey, that rhymes!
+	public nonces:		number[];
+	public solvedBy:	string[];
 
 	constructor(
-		public num?: number,
-		public previous?: string,
-		public body?: BlockBody | null, // fix later
-		public timestamp?: number,
-		public hash?: string) {
+		public num?:		number,
+		public previous?:	string,
+		public body?:		BlockBody | null, // fix later
+		public timestamp?:	number,
+		public hash?:		string) {
 
 		this.num = num ?? blockchain.length,
 		this.previous = previous, // Previous hash
@@ -78,10 +78,11 @@ export class Block {
 		this.hash = hash ?? Block.hash(this);
 	}
 
+	// Get hash of a block
 	static hash(
-		block: Block,
-		nonce?: number,
-		format?: string): string {
+		block:		Block,
+		nonce?:		number,
+		format?:	string): string {
 		// For mining
 		let trueNonce = nonce ? nonce : block.nonces[0];
 		let input = block.num + block.previous +
@@ -90,15 +91,22 @@ export class Block {
 		return hash(input, format);
 	}
 
-	static generate(body: BlockBody,
-					chain: (() => Block[]) | null
+	/*	Create a block
+	* Unlike using "new Block()," this method gets the block
+	* ready for being a part of the blockchain. Don't use this
+	* for temporary "throwaway" blocks, since they'll be permanent!
+	*/
+	static generate(body:	BlockBody,
+					chain:	(() => Block[]) | null
 						= () => blockchain): Block {
 		let prevBlock, previous, num;
 		if (blockchain.length === 0) {
+			// If genesis block
 			prevBlock = null;
 			previous = "";
 			num = 0;
 		} else {
+			// If... not genesis block?
 			prevBlock = blockchain[blockchain.length-1];
 			previous = prevBlock.hash;
 			num = prevBlock.num + 1;
@@ -117,8 +125,10 @@ export class Block {
 
 
 	static verify(block: Block): boolean {
+		// Get actual previous block from current block's index
 		let prevBlock = blockchain.filter(val => val.num === block.num-1)[0];
 
+		// If any of these booleans is "true," we got a problem.
 		const failCases = [
 			// Block hash doesn't match own recorded hash
 			Block.hash(block) !== block.hash,
@@ -127,12 +137,13 @@ export class Block {
 			block.timestamp > Date.now(),
 
 			///// Following checksums do not apply for genesis
-			
-			// Previous block does not exist
-			block.num !== 0 && !prevBlock,
+			block.num !== 0 && (
+				// Previous block does not exist
+				!prevBlock ||
 
-			// Block's recorded prevhash doesn't match previous's hash
-			block.num !== 0 && prevBlock.hash !== block.previous,
+				// Block's recorded prevhash doesn't match previous's hash
+				prevBlock.hash !== block.previous
+			)
 		]
 		
 		// Check for tampering
