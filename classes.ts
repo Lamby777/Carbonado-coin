@@ -93,7 +93,7 @@ export class Block {
 
 	/*	Create a block
 	* Unlike using "new Block()," this method gets the block
-	* ready for being a part of the blockchain. Don't use this
+	* prepared and pushed into the blockchain. Don't use this
 	* for temporary "throwaway" blocks, since they'll be permanent!
 	*/
 	static generate(body:	BlockBody,
@@ -136,7 +136,7 @@ export class Block {
 			// Block was sent by a time-traveler... or a hacker.
 			block.timestamp > Date.now(),
 
-			///// Following checksums do not apply for genesis
+			// THE FOLLOWING CHECKSUMS DON'T APPLY TO GENESIS
 			block.num !== 0 && (
 				// Previous block does not exist
 				!prevBlock ||
