@@ -44,6 +44,58 @@ export class Transaction {
 		return Transaction.hash(inputData, outputData);
 	}
 
+	static queryTx(filter?: (tx: Transaction) => boolean):
+			Transaction[] {
+		
+		let arr: Transaction[] = [];
+		
+		blockchain.forEach((block) => {
+			if (!block.body?.transactions) return;
+			
+			block.body.transactions.forEach((tx) => {
+				if (!filter || filter(tx)) arr.push(tx);
+			});
+		});
+		
+		return arr;
+	}
+
+	static queryOut(filter?: (txo: TxO) => boolean):
+			TxO[] {
+		
+		let arr: TxO[] = [];
+		
+		blockchain.forEach((block) => {
+			if (!block.body?.transactions) return;
+			
+			block.body.transactions.forEach((tx) => {
+				tx.outputs.forEach((out) => {
+					if (!filter || filter(out)) arr.push(out);
+				});
+			});
+		});
+		
+		return arr;
+	}
+
+	static queryIn(filter?: (txi: TxI) => boolean):
+			TxI[] {
+		
+		let arr: TxI[] = [];
+		
+		blockchain.forEach((block) => {
+			if (!block.body?.transactions) return;
+			
+			block.body.transactions.forEach((tx) => {
+				tx.inputs.forEach((input) => {
+					if (!filter || filter(input)) arr.push(input);
+				});
+			});
+		});
+		
+		return arr;
+	}
+
 	// Does the same thing as hash()
 	// Only added this for code maintainability
 	static hash(inputs: string, outputs: string): string {
@@ -158,9 +210,7 @@ export class TxI {
 		public fromNum?: number,
 		public fromId?: string,
 		public amount?: number) {
-		this.fromNum = fromNum,
-		this.fromId = fromId,
-		this.amount = amount;
+		// set signature later
 		//this.sig = "";
 	}
 
@@ -175,7 +225,7 @@ export class TxI {
 		}*/
 
 		const sigData = transaction.id; // apparently () big bad
-		const referencedUTXO = TxO.getUnspentByNum(
+		const referencedUTXO = TxO.getUOutAtIndex(
 			/*txI.fromId,*/ txI.fromNum);
 		//const referencedAddress = referencedUTXO.address;
 		const key = ec.keyFromPrivate(privKey, "hex");
@@ -184,35 +234,18 @@ export class TxI {
 }
 
 export class TxO {
-	// List of all TXOs, including spent
-	public static list: TxO[] = [];
 	public num: number;
 
 	constructor(
 		public addr: string,
 		public amount: number,
 		public spent: boolean) {
-		this.num = TxO.list.length,
-		this.addr = addr,
-		this.amount = amount;
-		this.spent = spent;
-
-		// Push to UTXOs list if not spent
-		TxO.list.push(this);
+		this.num = Transaction.queryTx().length;
 	}
 
 	// Query TXO list for unspent with matching num
-	static getUnspentByNum(num: number) {
-		return TxO.list.find(val =>
+	static getUOutAtIndex(num: number) {
+		return Transaction.queryOut(val =>
 			(val.num === num) && (!val.spent));
-	}
-
-	static get unspent() {
-		return TxO.list.filter((val: any) => !val.spent);
-	}
-
-	static updateUnspent() {
-		// Check blockchain for new in/outs and
-		// update spent status of old UTXOs
 	}
 }
