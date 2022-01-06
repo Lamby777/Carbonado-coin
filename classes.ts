@@ -206,28 +206,17 @@ export class Block {
 export class TxI {
 	public sig: string = "";
 
-	constructor(
-		public fromNum?: number,
-		public fromId?: string,
-		public amount?: number) {
-		// set signature later
-		//this.sig = "";
-	}
+	constructor(public fromNum?:	number, // Index of related TxO
+				public fromId?:		string, // ID of related TxO
+				public amount?:		number) {}
 
-	static sign(
-		transaction: Transaction,
-		txI: TxI,
-		privKey: string): number[] {
-		//UTXOs: TxO[] ) {
-		
-		/*if (txI instanceof Number) {
-			txI = transaction.inputs[txI];
-		}*/
+	static sign(transaction:	Transaction,
+				txI:			TxI,
+				privKey:		string): number[] {
 
-		const sigData = transaction.id; // apparently () big bad
-		const referencedUTXO = TxO.getUOutAtIndex(
-			/*txI.fromId,*/ txI.fromNum);
-		//const referencedAddress = referencedUTXO.address;
+		const sigData = transaction.id; // getters are adj.Weird();
+		const from = TxO.getUOutAtIndex(txI.fromNum);
+		// const referencedAddress = referencedUTXO.address;
 		const key = ec.keyFromPrivate(privKey, "hex");
 		return key.sign(sigData).toDER();
 	}
