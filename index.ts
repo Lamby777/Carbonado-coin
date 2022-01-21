@@ -86,7 +86,7 @@ let {} = app.get("/", (req: any, res: any) => {
 
 // Respond to "alive" checks in peer discovery
 let {} = app.get("/ping", (req: any, res: any) => {
-	regLog("yo");
+	regLog("Sent pong!");
 	res.json({
 		miner: config.miner,
 	});
@@ -268,6 +268,7 @@ export async function getNodes(amount:	number = 1,
 	for (let i = 0; i < amount; i++) {
 		if (arr.length === 0) return;
 		
+		// Can pick same node twice, FIX LATER
 		let picked = cindex(arr);
 
 		if ((!active) ||
