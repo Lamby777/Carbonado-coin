@@ -123,11 +123,6 @@ if (config.miner) {
 
 	// PEER DISCOVERY
 
-	// Put own IP on router lists
-	routersPush.forEach((r: string) => {
-		let {} = axios.post(r, {}).catch((e: Error) => console.error(e));
-	});
-
 	// Take IPs from router lists
 	routersPull.forEach((r: string) => {
 		let {} = axios.get(r).then((res) => {
@@ -137,7 +132,7 @@ if (config.miner) {
 			let ominers = miners.filter(async (peer: string) => {
 				// If IPv6, wrap in brackets for Axios
 				if (!peer.includes(".")) peer = `[${peer}]`;
-				console.log(peer);
+				regLog("Attempting ping @ " + peer);
 
 				// Run for each peer in router
 				let val: boolean = null;
@@ -159,6 +154,11 @@ if (config.miner) {
 		}).catch((e: Error) => {console.error(e)});//.finally(() => {
 			//setTimeout(_ => regLog(peers), 3000);
 		//});
+	});
+
+	// Put own IP on router lists
+	routersPush.forEach((r: string) => {
+		let {} = axios.post(r, {}).catch((e: Error) => console.error(e));
 	});
 }
 
