@@ -136,7 +136,7 @@ if (config.miner) {
 
 				// Run for each peer in router
 				let val: boolean = null;
-				axios.get("https://" + peer + ":11870/ping").then((res) => {
+				axios.get("http://" + peer + ":11870/ping").then((res) => {
 					regLog("Successful ping @ " + peer);
 					val = true;
 				}).catch((e: Error) => {
