@@ -141,8 +141,8 @@ if (config.miner) {
 
 				// Run for each peer in router
 				let val: boolean = null;
-				axios.get("http://" + peer + ":11870/ping").then((res) => {
-					regLog("Active Peer " + peer);
+				axios.get("https://" + peer + ":11870/ping").then((res) => {
+					regLog("Successful ping @ " + peer);
 					val = true;
 				}).catch((e: Error) => {
 					console.error(e.message);
@@ -180,7 +180,7 @@ export async function runCarbon(block: BlockType) {
 		nonce = generateNonce();
 	
 	// Update difficulty
-	difficulty = 3; // Set low because Replit doesn't like mining
+	difficulty = 9; // Set low because Replit doesn't like mining
 	
 	// Start hashing
 	const correctPrefix = "0".repeat(difficulty);
@@ -198,7 +198,7 @@ export async function runCarbon(block: BlockType) {
 		}
 
 		nonce++;
-	} while (!solved)
+	} while (!solved);
 
 	if (res) { // If didn't exit early
 		console.log(`Verified block ${block.num} nonce ${nonce}`);
