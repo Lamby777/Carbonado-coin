@@ -18,6 +18,8 @@ import * as fs		from "fs";
 import baseX		from "base-x";
 import axios		from "axios";
 import cleanup		from "./cleanup";
+import upnp			from "node-upnp";
+//import pmp			from "nat-pmp";
 
 import {
 	Block,
