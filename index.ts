@@ -15,19 +15,15 @@ const ALPHA58 = "123456789" +
 import Express		from "express";
 import * as HJSON	from "hjson";
 import * as fs		from "fs";
+import * as pork	from "freedom-port-control";
 import baseX		from "base-x";
 import axios		from "axios";
 import cleanup		from "./cleanup";
-import upnp			from "node-upnp";
-//import pmp			from "nat-pmp";
 
 import {
-	Block,
-	Declaration,
-	Script,
-	Transaction,
-	TxI, TxO,
-	hash,
+	Block, Declaration,
+	Script, Transaction,
+	TxI, TxO, hash,
 } from "./classes";
 
 const base58 = baseX(ALPHA58);
@@ -165,6 +161,20 @@ if (config.miner) {
 }
 
 export let appListen = app.listen(PORT, async () => {
+	const compat = pork.probeProtocolSupport();
+
+	// If none of the 3 methods are compatible...
+	if (!Object.values(compat).includes(true))
+		throw new Error("Please enable PMP, PCP, or UPNP on your router.");
+	
+	regLog("Attempting port forward...");
+	try {
+		pork.addMapping(PORT, 11870, 7200);
+	} catch (e) {
+		console.log("Port forwarding failed! Error:");
+		throw e;
+	}
+	//
 	regLog("Carbonado listening on port " + PORT);
 
 	if (config.miner) {

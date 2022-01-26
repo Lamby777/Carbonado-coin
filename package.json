@@ -24,8 +24,10 @@
     "@types/hjson": "^2.4.3",
     "axios": "^0.24.0",
     "base-x": "^3.0.9",
+    "dts-gen": "^0.6.0",
     "elliptic": "^6.5.4",
     "express": "^4.17.1",
+    "freedom-port-control": "^0.9.11",
     "hjson": "^3.2.2",
     "node": "^16.13.1",
     "npm": "^8.3.1"
