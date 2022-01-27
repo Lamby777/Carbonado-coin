@@ -178,8 +178,9 @@ export let appListen = app.listen(PORT, async () => {
 	}*/
 
 	upnp.map({
-		"port": [11870, 11870],
-		"protocol": "TCP"
+		port:			[11870, 11870],
+		protocol:		"TCP",
+		description:	"Carbonado daemon",
 	});
 	regLog("Carbonado listening on port " + PORT);
 
