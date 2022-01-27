@@ -15,17 +15,16 @@ const ALPHA58 = "123456789" +
 import Express		from "express";
 import * as HJSON	from "hjson";
 import * as fs		from "fs";
+//import * as pork	from "freedom-port-control";
+import * as upnp	from "nat-upnp-wrapper";
 import baseX		from "base-x";
 import axios		from "axios";
 import cleanup		from "./cleanup";
 
 import {
-	Block,
-	Declaration,
-	Script,
-	Transaction,
-	TxI, TxO,
-	hash,
+	Block, Declaration,
+	Script, Transaction,
+	TxI, TxO, hash,
 } from "./classes";
 
 const base58 = baseX(ALPHA58);
@@ -86,7 +85,7 @@ let {} = app.get("/", (req: any, res: any) => {
 
 // Respond to "alive" checks in peer discovery
 let {} = app.get("/ping", (req: any, res: any) => {
-	regLog("yo");
+	regLog("Sent pong!");
 	res.json({
 		miner: config.miner,
 	});
@@ -123,11 +122,6 @@ if (config.miner) {
 
 	// PEER DISCOVERY
 
-	// Put own IP on router lists
-	routersPush.forEach((r: string) => {
-		let {} = axios.post(r, {}).catch((e: Error) => console.error(e));
-	});
-
 	// Take IPs from router lists
 	routersPull.forEach((r: string) => {
 		let {} = axios.get(r).then((res) => {
@@ -137,12 +131,12 @@ if (config.miner) {
 			let ominers = miners.filter(async (peer: string) => {
 				// If IPv6, wrap in brackets for Axios
 				if (!peer.includes(".")) peer = `[${peer}]`;
-				console.log(peer);
+				regLog("Attempting ping @ " + peer);
 
 				// Run for each peer in router
 				let val: boolean = null;
 				axios.get("http://" + peer + ":11870/ping").then((res) => {
-					regLog("Active Peer " + peer);
+					regLog("Successful ping @ " + peer);
 					val = true;
 				}).catch((e: Error) => {
 					console.error(e.message);
@@ -160,9 +154,34 @@ if (config.miner) {
 			//setTimeout(_ => regLog(peers), 3000);
 		//});
 	});
+
+	// Put own IP on router lists
+	routersPush.forEach((r: string) => {
+		let {} = axios.post(r, {}).catch((e: Error) => console.error(e));
+	});
 }
 
 export let appListen = app.listen(PORT, async () => {
+	/*
+	const compat = pork.probeProtocolSupport();
+
+	// If none of the 3 methods are compatible...
+	if (!Object.values(compat).includes(true))
+		throw new Error("Please enable PMP, PCP, or UPNP on your router.");
+	
+	regLog("Attempting port forward...");
+	try {
+		pork.addMapping(PORT, 11870, 7200);
+	} catch (e) {
+		console.log("Port forwarding failed! Error:");
+		throw e;
+	}*/
+
+	upnp.map({
+		port:			[11870, 11870],
+		protocol:		"TCP",
+		description:	"Carbonado daemon",
+	});
 	regLog("Carbonado listening on port " + PORT);
 
 	if (config.miner) {
@@ -180,7 +199,7 @@ export async function runCarbon(block: BlockType) {
 		nonce = generateNonce();
 	
 	// Update difficulty
-	difficulty = 3; // Set low because Replit doesn't like mining
+	difficulty = 9; // Set low because Replit doesn't like mining
 	
 	// Start hashing
 	const correctPrefix = "0".repeat(difficulty);
@@ -198,7 +217,7 @@ export async function runCarbon(block: BlockType) {
 		}
 
 		nonce++;
-	} while (!solved)
+	} while (!solved);
 
 	if (res) { // If didn't exit early
 		console.log(`Verified block ${block.num} nonce ${nonce}`);
@@ -268,6 +287,7 @@ export async function getNodes(amount:	number = 1,
 	for (let i = 0; i < amount; i++) {
 		if (arr.length === 0) return;
 		
+		// Can pick same node twice, FIX LATER
 		let picked = cindex(arr);
 
 		if ((!active) ||
