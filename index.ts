@@ -15,7 +15,8 @@ const ALPHA58 = "123456789" +
 import Express		from "express";
 import * as HJSON	from "hjson";
 import * as fs		from "fs";
-import * as pork	from "freedom-port-control";
+//import * as pork	from "freedom-port-control";
+import * as upnp	from "nat-upnp-wrapper";
 import baseX		from "base-x";
 import axios		from "axios";
 import cleanup		from "./cleanup";
@@ -161,6 +162,7 @@ if (config.miner) {
 }
 
 export let appListen = app.listen(PORT, async () => {
+	/*
 	const compat = pork.probeProtocolSupport();
 
 	// If none of the 3 methods are compatible...
@@ -173,8 +175,12 @@ export let appListen = app.listen(PORT, async () => {
 	} catch (e) {
 		console.log("Port forwarding failed! Error:");
 		throw e;
-	}
-	//
+	}*/
+
+	upnp.map({
+		"port": [11870, 11870],
+		"protocol": "TCP"
+	});
 	regLog("Carbonado listening on port " + PORT);
 
 	if (config.miner) {
