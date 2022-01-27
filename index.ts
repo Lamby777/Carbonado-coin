@@ -15,8 +15,7 @@ const ALPHA58 = "123456789" +
 import Express		from "express";
 import * as HJSON	from "hjson";
 import * as fs		from "fs";
-//import * as pork	from "freedom-port-control";
-import * as upnp	from "nat-upnp-wrapper";
+import portcon		from "nat-api";
 import baseX		from "base-x";
 import axios		from "axios";
 import cleanup		from "./cleanup";
@@ -162,26 +161,18 @@ if (config.miner) {
 }
 
 export let appListen = app.listen(PORT, async () => {
-	/*
-	const compat = pork.probeProtocolSupport();
-
-	// If none of the 3 methods are compatible...
-	if (!Object.values(compat).includes(true))
-		throw new Error("Please enable PMP, PCP, or UPNP on your router.");
-	
-	regLog("Attempting port forward...");
-	try {
-		pork.addMapping(PORT, 11870, 7200);
-	} catch (e) {
-		console.log("Port forwarding failed! Error:");
-		throw e;
-	}*/
-
-	upnp.map({
-		port:			[11870, 11870],
-		protocol:		"TCP",
-		description:	"Carbonado daemon",
+	// port control
+	const pork = new portcon();
+	pork.map({
+		publicPort: 11870,
+		privatePort: 11870,
+		ttl: 3600,
+		protocol: "TCP",
+	}, (err: Error) => {
+		if (err) throw err;
+		console.log("Mapped port 11870 to external 11870 for TCP")
 	});
+	
 	regLog("Carbonado listening on port " + PORT);
 
 	if (config.miner) {
@@ -356,7 +347,7 @@ export function validateWalletAddress(addr: string): boolean {
 }
 
 // To prevent spam, this one will not log if testing
-function regLog(...val: any[]): void {
+export function regLog(...val: any[]): void {
 	if (!testing) console.log(...val);
 }
 

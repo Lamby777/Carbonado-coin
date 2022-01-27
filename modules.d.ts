@@ -1,3 +1,9 @@
+declare module "nat-api" {
+	export default class NatAPI {
+		map(port: number | Object, callback: Function): Promise<Error>;
+	}
+}
+
 declare module "freedom-port-control" {
 	export function probeProtocolSupport(): {
 		"natPmp":	boolean,
