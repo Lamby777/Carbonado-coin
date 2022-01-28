@@ -15,9 +15,7 @@ const ALPHA58 = "123456789" +
 import Express		from "express";
 import * as HJSON	from "hjson";
 import * as fs		from "fs";
-import holepunch	from "holepunch";
-//import portcon		from "nat-api";
-//import pmp			from "nat-pmp";
+import portcon		from "nat-api";
 import baseX		from "base-x";
 import axios		from "axios";
 import cleanup		from "./cleanup";
@@ -162,34 +160,29 @@ if (config.miner) {
 	});
 }
 
+
+
+
+
+
+
 export let appListen = app.listen(PORT, async () => {
-	/* port control via nat-api
+	// Port control via nat-api
 	const pork = new portcon();
 	pork.map({
-		publicPort: 11870,
-		privatePort: 11870,
+		publicPort: PORT,
+		privatePort: PORT,
 		ttl: 3600,
 		protocol: "TCP",
 	}, (err: Error) => {
 		if (err) throw err;
-		console.log("Mapped port 11870 to external 11870 for TCP")
-	});*/
-
-	// Port control via nat-pmp
-	const client = pmp.connect("10.0.0.1");
-	client.externalIp((err: any, info: any) => {
-		if (err) throw err;
-		console.log("ext IP " + info.ip.join("."))
+		if (PORT !== 11870) console.warn(
+			"WARNING: Using custom ports will make it so nobody " +
+			"will connect to your node. Don't do this unless you " +
+			"know exactly what you're doing!");
+		
+		console.log(`Mapped port ${PORT} to external ${PORT} for TCP`);
 	});
-	client.portMapping({private: 11870, public: 11870, ttl: 3600});
-
-	// Port control via holepunch module
-	/*holepunch({
-		mappings: [{internal: 11870, external: 11870, secure: true}],
-		protocols: ['none', 'upnp', 'pmp'],
-		rvpnConfigs: [],
-	}).then((mappings: Object) => { console.log(mappings); },
-			(err: Error | string) => { throw err; }); */
 	
 	regLog("Carbonado listening on port " + PORT);
 
@@ -198,6 +191,14 @@ export let appListen = app.listen(PORT, async () => {
 		let {} = runCarbon(genesis);
 	}
 });
+
+
+
+
+
+
+
+
 
 
 
