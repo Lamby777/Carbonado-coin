@@ -15,11 +15,14 @@ const ALPHA58 = "123456789" +
 import Express		from "express";
 import * as HJSON	from "hjson";
 import * as fs		from "fs";
-//import * as pork	from "freedom-port-control";
-import * as upnp	from "nat-upnp-wrapper";
+import portcon		from "nat-api";
 import baseX		from "base-x";
 import axios		from "axios";
 import cleanup		from "./cleanup";
+
+import {
+	version as csixVersion
+} from "./package.json";
 
 import {
 	Block, Declaration,
@@ -80,6 +83,7 @@ let {} = app.get("/", (req: any, res: any) => {
 	res.json({
 		blockchain: blockchain,
 		timestamp: Date.now(),
+		version: csixVersion,
 	});
 });
 
@@ -88,6 +92,7 @@ let {} = app.get("/ping", (req: any, res: any) => {
 	regLog("Sent pong!");
 	res.json({
 		miner: config.miner,
+		version: csixVersion,
 	});
 });
 
@@ -161,27 +166,30 @@ if (config.miner) {
 	});
 }
 
+
+
+
+
+
+
 export let appListen = app.listen(PORT, async () => {
-	/*
-	const compat = pork.probeProtocolSupport();
-
-	// If none of the 3 methods are compatible...
-	if (!Object.values(compat).includes(true))
-		throw new Error("Please enable PMP, PCP, or UPNP on your router.");
-	
-	regLog("Attempting port forward...");
-	try {
-		pork.addMapping(PORT, 11870, 7200);
-	} catch (e) {
-		console.log("Port forwarding failed! Error:");
-		throw e;
-	}*/
-
-	upnp.map({
-		port:			[11870, 11870],
+	// Port control via nat-api
+	const pork = new portcon();
+	pork.map({
+		publicPort:		PORT,
+		privatePort:	PORT,
+		ttl:			43200, // 12 hours
 		protocol:		"TCP",
-		description:	"Carbonado daemon",
+	}, (err: Error) => {
+		if (err) throw err;
+		if (PORT !== 11870) console.warn(
+			"WARNING: Using custom ports will make it so nobody " +
+			"will connect to your node. Don't do this unless you " +
+			"know exactly what you're doing!");
+		
+		console.log(`Mapped port ${PORT} to external ${PORT} for TCP`);
 	});
+	
 	regLog("Carbonado listening on port " + PORT);
 
 	if (config.miner) {
@@ -189,6 +197,14 @@ export let appListen = app.listen(PORT, async () => {
 		let {} = runCarbon(genesis);
 	}
 });
+
+
+
+
+
+
+
+
 
 
 
@@ -356,7 +372,7 @@ export function validateWalletAddress(addr: string): boolean {
 }
 
 // To prevent spam, this one will not log if testing
-function regLog(...val: any[]): void {
+export function regLog(...val: any[]): void {
 	if (!testing) console.log(...val);
 }
 
