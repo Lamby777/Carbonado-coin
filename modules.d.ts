@@ -4,6 +4,14 @@ declare module "nat-api" {
 	}
 }
 
+declare module "nat-pmp" {
+	export function connect(gatewayIp: string): any;
+}
+
+declare module "holepunch" {
+	export default function holepunch(opts: Object): Promise<Object>;
+}
+
 declare module "freedom-port-control" {
 	export function probeProtocolSupport(): {
 		"natPmp":	boolean,

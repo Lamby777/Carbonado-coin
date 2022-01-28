@@ -15,7 +15,9 @@ const ALPHA58 = "123456789" +
 import Express		from "express";
 import * as HJSON	from "hjson";
 import * as fs		from "fs";
-import portcon		from "nat-api";
+import holepunch	from "holepunch";
+//import portcon		from "nat-api";
+//import pmp			from "nat-pmp";
 import baseX		from "base-x";
 import axios		from "axios";
 import cleanup		from "./cleanup";
@@ -161,7 +163,7 @@ if (config.miner) {
 }
 
 export let appListen = app.listen(PORT, async () => {
-	// port control
+	/* port control via nat-api
 	const pork = new portcon();
 	pork.map({
 		publicPort: 11870,
@@ -171,7 +173,23 @@ export let appListen = app.listen(PORT, async () => {
 	}, (err: Error) => {
 		if (err) throw err;
 		console.log("Mapped port 11870 to external 11870 for TCP")
+	});*/
+
+	/* port control via nat-pmp
+	const client = pmp.connect("10.0.0.1");
+	client.externalIp((err: any, info: any) => {
+		if (err) throw err;
+		console.log("ext IP " + info.ip.join("."))
 	});
+	client.portMapping({private: 11870, public: 11870, ttl: 3600}); */
+
+	// Port control via holepunch module
+	holepunch({
+		mappings: [{internal: 11870, external: 11870, secure: true}],
+		protocols: ['none', 'upnp', 'pmp'],
+		rvpnConfigs: [],
+	}).then((mappings: Object) => { console.log(mappings); },
+			(err: Error | string) => { throw err; });
 	
 	regLog("Carbonado listening on port " + PORT);
 
