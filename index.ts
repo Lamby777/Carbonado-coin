@@ -175,21 +175,21 @@ export let appListen = app.listen(PORT, async () => {
 		console.log("Mapped port 11870 to external 11870 for TCP")
 	});*/
 
-	/* port control via nat-pmp
+	// Port control via nat-pmp
 	const client = pmp.connect("10.0.0.1");
 	client.externalIp((err: any, info: any) => {
 		if (err) throw err;
 		console.log("ext IP " + info.ip.join("."))
 	});
-	client.portMapping({private: 11870, public: 11870, ttl: 3600}); */
+	client.portMapping({private: 11870, public: 11870, ttl: 3600});
 
 	// Port control via holepunch module
-	holepunch({
+	/*holepunch({
 		mappings: [{internal: 11870, external: 11870, secure: true}],
 		protocols: ['none', 'upnp', 'pmp'],
 		rvpnConfigs: [],
 	}).then((mappings: Object) => { console.log(mappings); },
-			(err: Error | string) => { throw err; });
+			(err: Error | string) => { throw err; }); */
 	
 	regLog("Carbonado listening on port " + PORT);
 
