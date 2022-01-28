@@ -21,6 +21,10 @@ import axios		from "axios";
 import cleanup		from "./cleanup";
 
 import {
+	version as csixVersion
+} from "./package.json";
+
+import {
 	Block, Declaration,
 	Script, Transaction,
 	TxI, TxO, hash,
@@ -79,6 +83,7 @@ let {} = app.get("/", (req: any, res: any) => {
 	res.json({
 		blockchain: blockchain,
 		timestamp: Date.now(),
+		version: csixVersion,
 	});
 });
 
@@ -87,6 +92,7 @@ let {} = app.get("/ping", (req: any, res: any) => {
 	regLog("Sent pong!");
 	res.json({
 		miner: config.miner,
+		version: csixVersion,
 	});
 });
 
@@ -170,10 +176,10 @@ export let appListen = app.listen(PORT, async () => {
 	// Port control via nat-api
 	const pork = new portcon();
 	pork.map({
-		publicPort: PORT,
-		privatePort: PORT,
-		ttl: 3600,
-		protocol: "TCP",
+		publicPort:		PORT,
+		privatePort:	PORT,
+		ttl:			43200, // 12 hours
+		protocol:		"TCP",
 	}, (err: Error) => {
 		if (err) throw err;
 		if (PORT !== 11870) console.warn(
