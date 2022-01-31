@@ -1,4 +1,5 @@
 .breakpoints
+node_modules
 nodemem.json
 *.js
 !_*.js
