@@ -174,7 +174,7 @@ if (config.miner) {
 
 export let appListen = app.listen(PORT, async () => {
 	// Port control via nat-api
-	pork.attemptMap(PORT);
+	pork.attemptMap(PORT).catch();
 	
 	regLog("Carbonado listening on port " + PORT);
 

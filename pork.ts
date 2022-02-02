@@ -21,26 +21,18 @@ export default ({
 			"will connect to your node. Don't do this unless you " +
 			"know exactly what you're doing!" );
 		
-		/*let didPmpWork = await this.attemptPmp(defaultGateway, port);
-		if (!didPmpWork) {
-			// If PMP didn't work, attempt UPnP
-			
-			
-			if (true) {
-				// Finally, try PCP
-				
-				if (true) {
-					console.log("bruh");
-					// Throw error if none of the 3 worked.
-					return false
-				}
-			}
-		} else console.log(didPmpWork);*/
+		let success = await this.mapViaNatApi(port);
 		
-		this.mapViaNatApi(port);
+		if (!success) {
+			// Attempt another method if didn't work
+			
+			// Finally, return false if nothing worked
+			console.log("bruh");
+			return false;
+		}
 		
-		return true;
 		console.log(`Mapped internal to external (Port ${port}) for TCP`);
+		return true;
 	},
 	
 	async attemptPmp(routerIp: string, port: number) {
@@ -55,15 +47,12 @@ export default ({
 		}).catch(err => err);
 	},
 	
-	mapViaNatApi(port: number) {
-		client.map({
+	async mapViaNatApi(port: number) {
+		return await promisify(client.map)({
 			publicPort:		port,
 			privatePort:	port,
 			ttl:			MAPPING_TTL,
 			protocol:		"TCP",
-		}, (err: Error) => {
-			if (err) throw err;
-			console.log("Done!");
 		});
 	}
 });
