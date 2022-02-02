@@ -15,7 +15,7 @@ const ALPHA58 = "123456789" +
 import Express		from "express";
 import * as HJSON	from "hjson";
 import * as fs		from "fs";
-import portcon		from "nat-api";
+import pork			from "./pork";
 import baseX		from "base-x";
 import axios		from "axios";
 import cleanup		from "./cleanup";
@@ -174,21 +174,7 @@ if (config.miner) {
 
 export let appListen = app.listen(PORT, async () => {
 	// Port control via nat-api
-	const pork = new portcon();
-	pork.map({
-		publicPort:		PORT,
-		privatePort:	PORT,
-		ttl:			43200, // 12 hours
-		protocol:		"TCP",
-	}, (err: Error) => {
-		if (err) throw err;
-		if (PORT !== 11870) console.warn(
-			"WARNING: Using custom ports will make it so nobody " +
-			"will connect to your node. Don't do this unless you " +
-			"know exactly what you're doing!");
-		
-		console.log(`Mapped port ${PORT} to external ${PORT} for TCP`);
-	});
+	pork.attemptMap(PORT);
 	
 	regLog("Carbonado listening on port " + PORT);
 

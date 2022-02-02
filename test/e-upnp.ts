@@ -4,8 +4,8 @@
 process.env.MODE = "test mine";
 
 // Imports
-import test					from "ava";
-//import * as upnp			from "./../upnp";
+import pork		from "../pork";
+import test		from "ava";
 
 /**
  * Checks if UPNP is working properly,
@@ -13,8 +13,7 @@ import test					from "ava";
  */
 
 test.serial("UPNP", async (t) => {
-	//
-	
-	// Assert error code and make sure chain isn't updated
-	t.is(1, 2);
+	// Await port map
+	// attemptMap() returns status of port mapping
+	t.assert(await pork.attemptMap(11870));
 });
